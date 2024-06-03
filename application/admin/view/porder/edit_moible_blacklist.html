@@ -1,0 +1,84 @@
+{include file="public/header" /}
+<style>
+    .lables {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .lables span {
+        background-color: #f1f1f1;
+        border-radius: 4px;
+        padding: 5px 10px 5px 10px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>黑名单添加</h5>
+                    <div class="ibox-tools">
+
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <form method="post" class="form-horizontal" action="{:U('')}">
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>拉黑账号<span style="margin-left: 8px;color: #aaa;"></span></label>
+                               <textarea name="mobile" class="form-control"
+                                          placeholder="拉黑号码，多个回车分割">{:I('mobile')}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>黑名单有效天数<span style="margin-left: 8px;color: #aaa;"></span></label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12 lables">
+                                {volist name="heidays" id="vo"}
+                                <span onclick="kuaiJieLb('{$vo}')">{$vo}天</span>
+                                {/volist}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" name="limit_day"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>拉黑原因<span style="margin-left: 8px;color: #aaa;"></span></label>
+                               <textarea name="remark" class="form-control"
+                                          placeholder="拉黑号码备注的原因，可空">{:I('remark')}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <button type="submit" class="btn btn-primary ajax-post" target-form="form-horizontal">
+                                    确定
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script>
+    function kuaiJieLb(text) {
+        $("[name=limit_day]").val(text);
+    }
+</script>
+
+</html>

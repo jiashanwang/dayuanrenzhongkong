@@ -1,0 +1,309 @@
+{include file="public/header" /}
+<style>
+    .table-bordered > tbody > tr:hover {
+        background-color: #f5f5f5
+    }
+ .bt button{
+    float: left;
+    width: 67px;
+    height: 22px;
+    background-image: linear-gradient(to right,#f34a4a,#f55eab);
+    font-size: 12px;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    outline: none;
+    border-top-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    margin-top: -2px;
+}
+.bt button.cdk{
+    float: left;
+    width: 67px;
+    height: 22px;
+    background-image: linear-gradient(to right,#0b9aee,#53db70);
+    font-size: 12px;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    outline: none;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+    margin-top: 5px;
+}
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>产品列表</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row input-groups">
+                     <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            {volist name="_types" id="vo"}
+                            <li class="{$typeid==$vo['id']?'active':''} typetab" data-typeid="{$vo.id}">
+                                <a data-toggle="tab" href="#tab-{$vo.id}" aria-expanded="false">{$vo.type_name}</a>
+                            </li>
+                            {/volist}
+                        </ul>
+                    </div>
+                    <div class="row input-groups" style="margin-top: 10px;">
+                    
+                        <div class="col-md-2 form-inline text-left">
+                            <div class="form-group">
+                                <a class="btn btn-sm btn-white open-reload"><i
+                                        class="glyphicon glyphicon-repeat"></i></a>
+                            </div>
+                            <div class="form-group">
+                            </div>
+                        </div> 
+                        <div class="col-md-12 m-b-xs form-inline text-center">
+
+                            <div class="form-group">
+                                <label class="control-label">分类:</label>
+                                <select class="input-sm form-control input-s-sm inline serach_selects" name="cate_id"
+                                        style="width: auto;">
+                                    <option value="0">请选择</option>
+                                    {volist name="_cates" id="vo"}
+                                    <option value="{$vo.id}"
+                                    <?php if(I('cate_id')==$vo['id']){ echo "selected='selected'"; } ?>
+                                    >{$vo.cate}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input type="hidden" value="{:I('id')}" name="id"/>
+                                    <input type="hidden" name="type" value="{:I('type')}"/>
+                                    <input type="text" name="key" placeholder="请输入产品/描述" value="{:I('key')}"
+                                           class="input-sm form-control">
+                                    <span class="input-group-btn"><button type="button" id="search"
+                                                                          class="btn btn-sm btn-primary"
+                                                                          url="{:U('index')}"> 搜索</button></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="color: #f00">如果未设置浮动价格或者浮动价为0，会自动取下单用户自己当前等级设置的价格。</p>
+                    {eq name="is_zdy_price" value="1"}
+                            <div class="form-group">
+                                <button class="btn btn-sm btn-success prompt ajax-posts" target-form="i-checks"
+                                        prompt-title="请填写每100元上浮价格"
+                                        href="{:U('set_prices')}">
+                                    <i class="fa fa-edit"></i>
+                                    批量设置浮动价
+                                </button>
+                            </div>
+                         <p style="color: #f00">批量浮动价设置是根据产品名称内的面值进行设置,是根据每100元设置的浮动价，比如产品名称内的面值是200,批量设置浮动价时设置为0.5,那就代表这个产品上浮1,而不是0.5,计算方式是：（产品面值/100）*批量设置的浮动价。</p>
+                     {/eq}
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                {eq name="is_zdy_price" value="1"}
+                                <th><input type="checkbox" class="i-checks check-all">全选</th>
+                                {/eq}
+                                <th>产品ID</th>
+                                <th>套餐</th>
+                                <th>描述</th>
+                                <th>产品类型</th>
+                                <th>支持运营商</th>
+                                <th>地区</th>
+                                <th>我的价格(我提单价格)</th>
+                                {eq name="is_zdy_price" value="1"}
+<!--                                <th>建议零售价</th>-->
+                                <th>封顶价</th>
+                                <th>浮动价(利润)</th>
+                                <th>下级实际价格(下级提单价格)</th>
+                                <th>TAG</th>
+                                <th>自定义名</th>
+                                <th>显示端</th>
+                                {/eq}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name="_list" id="cate"}
+                            <tr>
+                                <td colspan="13" style="font-weight: 600;color: #f00;background-color: #f1f1f1;">
+                                    {$cate.cate}
+                                </td>
+                            </tr>
+                            {volist name="cate.products" id="vo"}
+                            <tr>
+                                {eq name="is_zdy_price" value="1"}
+                                <td style="width: 70px;">
+                                    <input type="checkbox" class="i-checks ids" name="product_id[]" value="{$vo.id}|{$vo.rangesid}">
+                                </td>
+                                {/eq}
+                                <td style="font-weight: 600;color: #f00;">{$vo.id}</td>
+                                <td>{$vo.name}</td>
+                                <td>{$vo.desc}</td>
+                                <td>{$vo.type_name}</td>
+                                <td>{$vo.isp|getISPText}</td>
+                                <td>允许：{$vo.allow_pro}-{$vo.allow_city}<br/>
+                                    禁止：{$vo.forbid_pro}-{$vo.forbid_city}
+                                </td>
+                                <td>{$vo.price}</td>
+                                {eq name="is_zdy_price" value="1"}
+<!--                                <td>{$vo.y_price}</td>-->
+                                <td>{$vo.max_price}</td>
+                                <td>{$vo.ranges}&nbsp;<a class="ranges" data-id="{$vo.rangesid}"
+                                                         data-ranges="{$vo.ranges}" data-productid="{$vo.id}"
+                                                         data-name="{$vo.name}">设置</a></td>
+                                <td>{$vo.ranges>0?($vo.price+$vo.ranges):'-'}</td>
+                                <td>{$vo.ys_tag}&nbsp;<a class="ystag" data-id="{$vo.rangesid}"
+                                                         data-ystag="{$vo.ys_tag}" data-productid="{$vo.id}"
+                                                         data-name="{$vo.name}">设置</a>
+                                </td>
+                                <td>{$vo.zdyname}&nbsp;<a class="zdyname" data-id="{$vo.rangesid}"
+                                                          data-ystag="{$vo.zdyname}" data-productid="{$vo.id}"
+                                                          data-name="{$vo.name}">设置</a>
+                                </td>
+                                <td>
+                                    {:C('PRODUCT_SHOW_CLIENT')[$vo['show_style']]}
+                                    <a class="text-navy open-window" title="编辑"
+                                       href="{:U('edit',array('id'=>$vo['rangesid'],'product_id'=>$vo['id']))}">修改</a>
+                                </td>
+                                {/eq}
+                            </tr>
+                            {/volist}
+                            {/volist}
+                            </tbody>
+                        </table>
+                    </div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal inmodal" id="rangesModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <form method="post" action="{:U('hz_price_edit')}" class="rangesModal">
+        <div class="modal-dialog">
+            <div class="modal-content animated fadeIn">
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="rangesid">
+                    <input type="hidden" name="product_id" id="ranges_product_id">
+                    <p><strong id="rangesname">浮动价格</strong></p>
+                    <div class="form-group">
+                        <input type="number" placeholder="请输入浮动金额（即利润）" value=""
+                               class="form-control" name="ranges" autocomplete="off">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal" onclick="closeRangesModal()">关闭
+                    </button>
+                    <button type="submit" class="btn btn-primary ajax-post no-close" target-form="rangesModal">保存
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal inmodal" id="ystagModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <form method="post" action="{:U('hz_price_ystag_edit')}" class="ystagModal">
+        <div class="modal-dialog">
+            <div class="modal-content animated fadeIn">
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="ysrangesid">
+                    <input type="hidden" name="product_id" id="ys_product_id">
+                    <p><strong id="rangestagname">TAG</strong></p>
+                    <div class="form-group">
+                        <input type="text" placeholder="请输入右上角tag" value=""
+                               class="form-control" name="ys_tag" autocomplete="off">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal" onclick="closeysRangesModal()">关闭
+                    </button>
+                    <button type="submit" class="btn btn-primary ajax-post no-close" target-form="ystagModal">保存
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal inmodal" id="zdynameModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <form method="post" action="{:U('hz_price_zdyname_edit')}" class="zdynameModal">
+        <div class="modal-dialog">
+            <div class="modal-content animated fadeIn">
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="znrangesid">
+                    <input type="hidden" name="product_id" id="zn_product_id">
+                    <p><strong id="rangeszdyname">自定义名</strong></p>
+                    <div class="form-group">
+                        <input type="text" placeholder="请输入自定义套餐名称" value=""
+                               class="form-control" name="name" autocomplete="off">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal" onclick="closeznRangesModal()">关闭
+                    </button>
+                    <button type="submit" class="btn btn-primary ajax-post no-close" target-form="zdynameModal">保存
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="__JS__/Product.js"></script>
+<script>
+    $(".ranges").click(function () {
+        $("#rangesname").text($(this).data("name") + "-利润");
+        $("#rangesid").val($(this).data("id"));
+        $("#ranges_product_id").val($(this).data("productid"));
+        $("[name=ranges]").val($(this).data("ranges"));
+        $("#rangesModal").show();
+    });
+
+    function closeRangesModal() {
+        $("#rangesModal").hide();
+    }
+
+    $(".ystag").click(function () {
+        $("#rangestagname").text($(this).data("name") + "-TAG");
+        $("#ysrangesid").val($(this).data("id"));
+        $("#ys_product_id").val($(this).data("productid"));
+        $("[name=ys_tag]").val($(this).data("ystag"));
+        $("#ystagModal").show();
+    });
+
+    function closeysRangesModal() {
+        $("#ystagModal").hide();
+    }
+
+
+    $(".zdyname").click(function () {
+        $("#rangeszdyname").text($(this).data("name") + "-改自定义名");
+        $("#znrangesid").val($(this).data("id"));
+        $("#zn_product_id").val($(this).data("productid"));
+        $("[name=name]").val($(this).data("ystag"));
+        $("#zdynameModal").show();
+    });
+
+    function closeznRangesModal() {
+        $("#zdynameModal").hide();
+    }
+
+</script>
+<script>
+    $(".typetab").click(function () {
+        var type_id = $(this).data('typeid');
+        $("[name=type]").val(type_id);
+        $("[name=cate_id]").val(0);
+        $("#search").trigger("click");
+    });
+    $(document).ready(function () {
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green'
+        });
+    });
+</script>
+</body>
+</html>

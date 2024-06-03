@@ -1,0 +1,35 @@
+{include file="public/header" /}
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>临时授权链接</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="form-group js-copy" data-clipboard-text="{$authurl}">
+                        {$authurl}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    var btn = document.getElementsByClassName("js-copy");
+    var clipboard = new Clipboard(btn);//实例化
+    //复制成功执行的回调，可选
+    clipboard.on('success', function (e) {
+        layer.msg('复制成功！');
+    });
+
+    //复制失败执行的回调，可选
+    clipboard.on('error', function (e) {
+        layer.msg('复制失败！');
+    });
+
+</script>
+</html>

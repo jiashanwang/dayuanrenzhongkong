@@ -1,0 +1,81 @@
+{include file="public/header" /}
+<body class="gray-bg">
+<div class="wrapper wrapper-content" id="page">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>{:I('id')?'编辑':'新增'}产品类型</h5>
+                    <div class="ibox-tools">
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <form role="form" action="{:U()}" method="post" class="menu_form  form-horizontal">
+                        <input name="id" value="{$info.id|default=''}" type="hidden"/>
+                        {empty name="info"}
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>类型名称</label>
+                                <input type="text" placeholder="请输入类型名称" class="form-control" name="cname"
+                                       value="{$info.cname|default=''}">
+                            </div>
+                        </div>
+                        {else/}
+                        {gt name="info.id" value="3"}
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>类型名称1</label>
+                                <input type="text" placeholder="请输入类型名称" class="form-control" name="cname"
+                                       value="{$info.cname|default=''}">
+                            </div>
+                        </div>
+                        {else/}
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>类型名称</label>
+                                <input type="text" placeholder="请输入类型名称" class="form-control" name="cname"
+                                       value="{$info.cname|default=''}" disabled>
+                            </div>
+                        </div>
+                        {/gt}
+                        {/empty}
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>输入提示</label>
+                                <input type="text" placeholder="账号输入提示" class="form-control" name="pla_mobile"
+                                       value="{$info.pla_mobile|default=''}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>输入框图标<span style="margin-left: 8px;color: #aaa;"></span></label>
+                                <img id="cicon" src="{$info.cicon|default=''}"
+                                     style="display: block;margin-bottom: 10px;width: 100px;height: auto;" alt=""/>
+                                <button class="btn btn-success open-img-window" style="width:100px;" type="button"
+                                        data-url="{:U('widget/images')}" data-max="1" data-name="cicon"><i
+                                        class="fa fa-upload"></i>&nbsp;&nbsp;<span class="bold">上传</span></button>
+                                <input type="hidden" name="cicon" value="{$info.cicon|default=''}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <button class="btn btns btn-sm btn-primary pull-left ajax-post" type="submit"
+                                        target-form="menu_form"><strong>确 定</strong></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.changeIMG = function (name, res) {
+        $("#" + name).attr("src", res);
+        $("[name=" + name + "]").val(res);
+    }
+</script>
+</body>
+</html>
+

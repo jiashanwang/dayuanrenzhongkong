@@ -1,0 +1,70 @@
+{include file="public/header" /}
+<style>
+    .table-bordered > tbody > tr:hover {
+        background-color: #f5f5f5
+    }
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>打款申请记录</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row input-groups" style="margin-bottom: 10px">
+                        <div class="col-md-2 form-inline text-left">
+                            <div class="form-group">
+                                <a class="btn btn-sm btn-white open-reload"><i
+                                        class="glyphicon glyphicon-repeat"></i></a>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-sm btn-primary open-window" href="{:U('edit')}" title="提交申请"><i class="fa fa-plus"></i> 提交申请</a>
+                            </div>
+                        </div>
+                        <div class="col-md-10 m-b-xs form-inline text-right">
+
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>申请时间</th>
+                                <th>转入账户</th>
+                                <th>打款户名</th>
+                                <th>金额</th>
+                                <th>备注(订单号/流水号/凭证)</th>
+                                <th>状态</th>
+                                <th>处理时间</th>
+                                <th>处理备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name="_list" id="vo"}
+                            <tr>
+                                <td>{$vo.create_time|time_format}</td>
+                                <td>{$vo.platform_account}</td>
+                                <td>{$vo.account}</td>
+                                <td>{$vo.money}</td>
+                                <td>{$vo.remark}</td>
+                                <td>{:C('APPLYBLA_STATUS')[$vo['status']]}</td>
+                                <td>{$vo.deal_time|time_format}</td>
+                                <td>{$vo.deal_remark}</td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="page">
+                        {$_list->render()}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

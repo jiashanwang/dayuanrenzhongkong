@@ -1,0 +1,232 @@
+{include file="public/header" /}
+<style>
+    .table-bordered > tbody > tr:hover {
+        background-color: #f5f5f5
+    }
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>会员账单筛选</h5>
+                </div>
+                <div class="ibox-content">
+                <div class="row input-groups">
+                <div class="col-md-12 m-b-xs form-inline text-left">
+                  <div class="form-group">
+                                <span class="control-label">日期:</span>
+                                <input type="text" name="begin_time" id="begin_time" value="{:I('begin_time')}"
+                                       class="input-sm input-s-sm form-control input-s-sm inline serach_selects" autocomplete="off" placeholder="开始时间"/>
+                                <span class="control-label">-</span>
+                                <input type="text" name="end_time" id="end_time" value="{:I('end_time')}"
+                                       class="input-sm input-s-sm form-control input-s-sm inline serach_selects" autocomplete="off" placeholder="结束时间"/>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">类型:</label>
+                                <?php $types=C('CUS_TYPE');?>
+                                <select class="input-sm form-control input-s-sm inline serach_selects" name="type">
+                                    <option value="0">请选择</option>
+                                    {volist name="types" id="to" }
+                                    <option value="{$key}"
+                                    <?php if(I('type')==$key){ echo "selected='selected'"; } ?>
+                                    >{$to}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">等级:</label>
+                                <select class="input-sm form-control input-s-sm inline serach_selects" name="grade_id"
+                                        style="width: auto;">
+                                    <option value="0">请选择</option>
+                                    {volist name="grades" id="vo"}
+                                    <option value="{$vo.id}"
+                                    <?php if(I('grade_id')==$vo['id']){ echo "selected='selected'"; } ?>
+                                    >{$vo.grade_name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">查询条件:</label>
+                                <select class="input-sm form-control input-s-sm inline" name="query_name"
+                                        style="width: auto;">
+                                    <option value="">模糊</option>
+                                    <option value="id"
+                                    <?php if(I('query_name')=='id'){ echo "selected='selected'"; } ?>>ID</option>
+                                    <option value="username"
+                                    <?php if(I('query_name')=='username'){ echo "selected='selected'"; } ?>
+                                    >名称</option>
+                                    <option value="wx_openid"
+                                    <?php if(I('query_name')=='wx_openid'){ echo "selected='selected'"; } ?>
+                                    >openid</option>
+                                    <option value="mobile"
+                                    <?php if(I('query_name')=='mobile'){ echo "selected='selected'"; } ?>>手机号</option>
+                                    <option value="weixin_appid"
+                                    <?php if(I('query_name')=='weixin_appid'){ echo "selected='selected'"; } ?>
+                                    >appid</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input type="hidden" name="id" value="{:I('id')}"/>
+                                    <input type="text" name="key" placeholder="请输入昵称或者手机号" value="{:I('key')}"
+                                           class="input-sm form-control">
+                                    <span class="input-group-btn"><button type="button" id="search"
+                                                                          class="btn btn-sm btn-primary"
+                                                                          url="{:U('day_price')}"> 搜索</button></span>
+                                </div>
+                            </div>
+                            </div>
+                            </div>
+                    <div class="row input-groups" style="margin-bottom: 10px">
+                        <div class="col-md-1 form-inline text-left">
+                            <div class="form-group">
+                                <a class="btn btn-sm btn-white open-reload"><i
+                                        class="glyphicon glyphicon-repeat"></i></a>
+                            </div>
+                            
+                        </div>
+                        <div class="col-md-12 m-b-xs form-inline text-left" style="color: #f00">
+                            总订单数不包括未付款和取消的订单<br/>成功订单数只包括充值成功、部分充值完成、部分退款的订单数，成功金额也是如此。
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>代理ID</th>
+                                <th>用户名</th>
+                                <th>订单数</th>
+                                <th>订单金额</th>
+                                <th>成功数</th>
+                                <th>成功金额</th>
+                                <th>期初余额</th>
+                                <th>期末余额</th>
+                                <th>加款</th>
+                                <th>返利</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name="_list" id="vo"}
+                            <tr>
+                                <td>{$vo.id}</td>
+                                <td>{$vo.username}</td>
+                                <td>{$vo.dingdanshu}</td>
+                                <td>{$vo.dingdanprice}</td>
+                                <td>{$vo.cgdingdanshu}</td>
+                                <td>{$vo.cgprice}</td>
+                                <td>{$vo.qichu}</td>
+                                <td>{$vo.qimo}</td>
+                                <td>{$vo.jiakuan}</td>
+                                <td>{$vo.flprice}</td>
+                            </tr>
+                            {/volist}
+                            
+                            <tr>
+                            <td><font color="#FF0000"><strong>总计</strong></font></td>
+                                <td>-</td>
+                                <td><font color="#FF0000"><strong>{$vo.sumdingdanshu}</strong></font></td>
+                                <td><font color="#FF0000"><strong>{$vo.sumdingdanprice}</strong></font></td>
+                                <td><font color="#FF0000"><strong>{$vo.sumcgdingdanshu}</strong></font></td>
+                                <td><font color="#FF0000"><strong>{$vo.sumcgprice}</strong></font></td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><font color="#FF0000"><strong>{$vo.sumjiakuan}</strong></font></td>
+                                <td><font color="#FF0000"><strong>{$vo.sumflprice}</strong></font></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__JS__/laydate/laydate.js"></script>
+<script>
+    $("#search,#excel").click(function () {
+        var url = $(this).attr('url');
+        var query = $('.input-groups').find('input').serialize();
+        var select = $('.input-groups').find('select').serialize();
+        query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g, '');
+        query = query.replace(/^&/g, '');
+        if (url.indexOf('?') > 0) {
+            url += '&' + query;
+        } else {
+            url += '?' + query;
+        }
+        if (url.indexOf('?') > 0) {
+            url += '&' + select;
+        } else {
+            url += '?' + select;
+        }
+        window.location.href = url;
+    });
+    //回车搜索
+    $(".input-sm").keyup(function (e) {
+        if (e.keyCode === 13) {
+            $("#search").click();
+            return false;
+        }
+    });
+    $(".serach_selects").change(function () {
+        $("#search").click();
+        return false;
+    });
+    $(".resetpwd").click(function () {
+        $("#uppwdid").val($(this).data("id"));
+        $("#uppwdModal").show();
+    });
+
+    function closeuppwdModal() {
+        $("#uppwdModal").hide();
+    }
+
+    $(".recharge").click(function () {
+        $("#rechargeid").val($(this).data("id"));
+        $("#rechargeModal").show();
+    });
+
+    function closerechargeModal() {
+        $("#rechargeModal").hide();
+    }
+
+    $(".resetgoogle").click(function () {
+        $("#googleid").val($(this).data("id"));
+        $("#googleModal").show();
+    });
+
+    function closegoogleModal() {
+        $("#googleModal").hide();
+    }
+</script>
+<script>
+
+    //执行一个laydate实例
+    laydate.render({
+        elem: '#begin_time',
+        type: 'datetime',
+        done: function (value, date, endDate) {
+            $('#begin_time').val(value);
+        }
+    });
+    laydate.render({
+        elem: '#end_time',
+        type: 'datetime',
+        done: function (value, date, endDate) {
+            $('#end_time').val(value);
+        }
+    });
+    $(".tiptext").click(function () {
+        var text = $(this).data('text');
+        layer.alert(text, {
+            skin: 'layui-layer-molv' //样式类名
+            , closeBtn: 0
+        }, function () {
+            layer.closeAll();
+        });
+    });
+</script>
+</body>
+</html>

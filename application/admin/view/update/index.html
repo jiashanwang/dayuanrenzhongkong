@@ -1,0 +1,129 @@
+{include file="public/header" /}
+<style>
+    .table-bordered > tbody > tr:hover {
+        background-color: #f5f5f5
+    }
+
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>系统更新</h5>
+                </div>
+                <form method="post" class="form-horizontal" action="{:U('now_update')}">
+                    <div class="ibox-content">
+                        <p class="text-danger">1、(非常重要)更新前最好先确认官方技术员是否在线，确认可以更新再开始！（技术不在时执意更新出现问题，后果自负）</p>
+                        <p class="text-danger">2、(非常重要)更新前先到“网站设置”中把“维护”打开，等更新全部完成以后再恢复“正常”状态！！（没做该步骤会导致更新过程中系统数据出现异常）</p>
+                        <p class="text-danger">3、更新前请先备份数据库和站点目录！以免造成不必要的损失！切记！切记！切记！（不会操作的更新前联系技术处理）</p>
+                        <p class="text-danger">4、更新完成以后联系技术请进入服务器宝塔面板->软件商店->supervisor管理器中重启的两个守护进程！</p>
+                        <p class="text-warning">官方提示:{$appinfo.content}</p>
+                        <p>当前版本：{:C('dtupdate.version')}</p>
+                        <p>提示：{$check_msg}</p>
+                        {notempty name="updata"}
+                        <p>最新版本：{$updata.version}</p>
+                        <p>新版介绍：{$updata.desc}<br/><br/>
+
+                        </p>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <label>谷歌身份验证码<span style="margin-left: 8px;color: #aaa;"></span></label>
+                                <input type="text" class="form-control" name="verifycode" autocomplete="off"
+                                       placeholder="请填写谷歌身份验证码，未设置可为空" maxlength="6">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary confirm ajax-post" target-form="form-horizontal">
+                            立即更新
+                        </button>
+                        {/notempty}
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>其他功能</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="form-group">
+                        <button class="btn btn-sm btn-warning ajax-get confirm" target-form="i-checks"
+                                href="{:U('repairsql')}" title="当更新导致系统异常时，可以试着执行修复，一般技术会告诉你是否需要点修复">
+                            <i class="fa fa-wrench"></i>  执行修复
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {notempty name="history"}
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>最近更新（只显示最近的几个版本）</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="feed-activity-list">
+
+                        {volist name="history" id="vo"}
+                        <div class="feed-element">
+                            <div class="media-body ">
+                                <small class="pull-right text-navy">{$vo.create_time|time_format}</small>
+                                <strong>{$vo.version}</strong>
+                                <br>
+                                <small class="text-muted">{$vo.desc}</small>
+                                <div class="actions">
+                                    <a class="btn btn-sm btn-white hisup" data-version="{$vo.version}"
+                                       data-path="{$vo.path}"> 执行版本&nbsp;{$vo.version} 更新</a>
+                                </div>
+                            </div>
+                        </div>
+                        {/volist}
+                        <div class="feed-element">
+                            ...
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        {/notempty}
+
+    </div>
+</div>
+<div class="modal inmodal" id="hisupModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <form method="post" action="{:U('his_update')}" class="hisupModal">
+        <div class="modal-dialog">
+            <div class="modal-content animated fadeIn">
+                <div class="modal-body">
+                    <p><strong>谷歌验证码</strong></p>
+                    <div class="form-group">
+                        <input type="hidden" value="" name="version">
+                        <input type="hidden" value="" name="version_path">
+                        <input type="text" placeholder="请输入谷歌验证码" value=""
+                               class="form-control" name="verifycode" autocomplete="off">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal" onclick="closehisupModal()">取消
+                    </button>
+                    <button type="submit" class="btn btn-primary ajax-post" target-form="hisupModal">立即更新</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+<script>
+    $(".hisup").click(function () {
+        $("[name=version]").val($(this).data("version"));
+        $("[name=version_path]").val($(this).data("path"));
+        $("#hisupModal").show();
+    });
+
+    function closehisupModal() {
+        $("#hisupModal").hide();
+    }
+</script>
+</html>

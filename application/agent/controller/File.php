@@ -1,0 +1,9 @@
+<?php
+/*
+ 本代码由 成都大猿人网络科技有限公司 原创开发
+ 官方网址：www.dayuanren.cn
+ 严禁反编译、逆向等任何形式的侵权行为，违者将追究法律责任
+*/
+
+namespace app\agent\controller;class File extends Admin{public function upload(){$F8iDU=C('UPLOAD_FILE')==0;if($F8iDU)goto F8ieWjgx2;goto F8ildMhx2;F8ieWjgx2:return djson(1,"暂时停用所有上传接口，请联系管理员上传");goto F8ix1;F8ildMhx2:F8ix1:unset($F8itIDU);$F8itIDU=request()->file('file');$A_AAAA___=$F8itIDU;if(empty($A_AAAA___))goto F8ieWjgx4;goto F8ildMhx4;F8ieWjgx4:return $this->error('请选择上传文件');goto F8ix3;F8ildMhx4:F8ix3:unset($F8itIDU);$F8itIDU=$A_AAAA___->validate(array('size'=>C('DOWNLOAD_UPLOAD.maxSize'),'ext'=>C('DOWNLOAD_UPLOAD.exts')))->move(C('DOWNLOAD_UPLOAD.movePath'));$A_AAAA__A=$F8itIDU;if($A_AAAA__A)goto F8ieWjgx6;goto F8ildMhx6;F8ieWjgx6:$F8ivPDU=C('DOWNLOAD_UPLOAD.rootPath') . $A_AAAA__A->getSaveName();return djson(0,'上传成功',$F8ivPDU);goto F8ix5;F8ildMhx6:return djson(1,$A_AAAA___->getError());F8ix5:}public function upload_txt(){$F8iDU=C('UPLOAD_FILE')==0;if($F8iDU)goto F8ieWjgx8;goto F8ildMhx8;F8ieWjgx8:return djson(1,"暂时停用所有上传接口，请联系管理员上传");goto F8ix7;F8ildMhx8:F8ix7:unset($F8itIDU);$F8itIDU=request()->file('file');$A_AAAA_A_=$F8itIDU;if(empty($A_AAAA_A_))goto F8ieWjgxa;goto F8ildMhxa;F8ieWjgxa:return $this->error('请选择上传文件');goto F8ix9;F8ildMhxa:F8ix9:unset($F8itIDU);$F8itIDU=$A_AAAA_A_->validate(array('size'=>C('DOWNLOAD_UPLOAD_TXT.maxSize'),'ext'=>C('DOWNLOAD_UPLOAD_TXT.exts')))->move(C('DOWNLOAD_UPLOAD_TXT.movePath'),'');$A_AAAA_AA=$F8itIDU;if($A_AAAA_AA)goto F8ieWjgxc;goto F8ildMhxc;F8ieWjgxc:$F8ivPDU=C('DOWNLOAD_UPLOAD_TXT.rootPath') . $A_AAAA_AA->getSaveName();return djson(0,'上传成功',$F8ivPDU);goto F8ixb;F8ildMhxc:return djson(1,$A_AAAA_A_->getError());F8ixb:}}
+?>

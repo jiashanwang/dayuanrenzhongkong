@@ -1,0 +1,88 @@
+{include file="public/header" /}
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>接口套餐编辑</h5>
+                    <div class="ibox-tools">
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <form method="post" class="form-horizontal" action="{:U('')}">
+                        <input type="hidden" name="id" value="{$info.id}">
+                        <input type="hidden" name="reapi_id" value="{:I('reapi_id')}">
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>套餐名称<span style="margin-left: 8px;color: #f00;">自己定义接口套餐名称，方便识别;填写的时候带数字面值且只有面值的数字，比如“100元”,"快充100","四川100电费"</span></label>
+                                <input type="text" class="form-control" name="desc" value="{$info.desc}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>成本<span style="margin-left: 8px;color: #aaa;">选填，填写以后便于计算利润</span></label>
+                                <input type="text" class="form-control" name="cost" value="{$info.cost}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3">
+                                <label>参数1<span style="margin-left: 8px;color: #aaa;">依据参数定义填写</span></label>
+                                <input type="text" class="form-control" name="param1" value="{$info.param1}">
+                            </div>
+                            <div class="col-sm-3">
+                                <label>参数2<span style="margin-left: 8px;color: #aaa;">依据参数定义填写</span></label>
+                                <input type="text" class="form-control" name="param2" value="{$info.param2}">
+                            </div>
+                            <div class="col-sm-3">
+                                <label>参数3<span style="margin-left: 8px;color: #aaa;">依据参数定义填写</span></label>
+                                <input type="text" class="form-control" name="param3" value="{$info.param3}">
+                            </div>
+                            <div class="col-sm-3">
+                                <label>参数4<span style="margin-left: 8px;color: #aaa;">依据参数定义填写</span></label>
+                                <input type="text" class="form-control" name="param4" value="{$info.param4}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <label>允许传单省份<span style="margin-left: 8px;color: #aaa;">话费/流量/电费生效</span></label>
+                                <input type="text" class="form-control" name="allow_pro" value="{$info.allow_pro}"
+                                       placeholder="多个用英文,隔开，如：广东,福建" autocomplete="off">
+                            </div>
+                            <div class="col-sm-6">
+                                <label>允许传单城市<span style="margin-left: 8px;color: #aaa;">话费/流量/电费生效(电费带市，话费不带市)</span></label>
+                                <input type="text" class="form-control" name="allow_city" value="{$info.allow_city}"
+                                       placeholder="多个用英文,隔开，如：深圳,东莞" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <label>禁止传单省份<span style="margin-left: 8px;color: #aaa;">话费/流量/电费生效</span></label>
+                                <input type="text" class="form-control" name="forbid_pro" value="{$info.forbid_pro}"
+                                       placeholder="多个用英文,隔开，如：广东,福建" autocomplete="off">
+                            </div>
+                            <div class="col-sm-6">
+                                <label>禁止传单城市<span style="margin-left: 8px;color: #aaa;">话费/流量/电费生效(电费带市，话费不带市)</span></label>
+                                <input type="text" class="form-control" name="forbid_city" value="{$info.forbid_city}"
+                                       placeholder="多个用英文,隔开，如：深圳,东莞" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <button type="submit" class="btn btn-primary ajax-post" target-form="form-horizontal">
+                                    确定
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>

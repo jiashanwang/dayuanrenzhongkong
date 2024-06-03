@@ -1,0 +1,66 @@
+{include file="public/header" /}
+<style>
+    .table-bordered > tbody > tr:hover {
+        background-color: #f5f5f5
+    }
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>扩展字段</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row input-groups">
+                        <div class="col-md-12" style="color:#f00;">
+
+                        </div>
+                    </div>
+                    <div class="row input-groups">
+                        <div class="col-md-6 form-inline text-left">
+                            <div class="form-group">
+                                <a class="btn btn-sm btn-white open-reload"><i
+                                        class="glyphicon glyphicon-repeat"></i></a>
+                                <a class="btn btn-sm btn-primary open-window" title="新增类型"
+                                   href="{:U('typec_ziduan_edit',['typec_id'=>I('typec_id')])}"><i class="fa fa-plus"></i><strong> 新增字段</strong></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>字段</th>
+                                <th>输入提示</th>
+                                <th>排序</th>
+                                <th>输入框类型</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name="_list" id="vo"}
+                            <tr>
+                                <td>{$vo.zi_duan}</td>
+                                <td>{$vo.pla_ziduan}</td>
+                                <td>{$vo.sort}</td>
+                                <td>{:C('TYPEC_INPUT_TYPES')[$vo.input_type]}</td>
+                                <td>
+                                    <a class="text-navy open-window" title="编辑"
+                                       href="{:U('typec_ziduan_edit',array('id'=>$vo['id'],'typec_id'=>I('typec_id')))}">编辑</a>
+                                    <a class="text-danger ajax-get confirm" href="{:U('typec_ziduan_del?id='.$vo.id)}"
+                                       title="删除">删除</a>
+                                </td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

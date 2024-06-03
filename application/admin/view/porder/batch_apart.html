@@ -1,0 +1,190 @@
+{include file="public/header" /}
+<style>
+    .yixuanapi {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .yixuanapi .item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .yixuanapi .item .delbtn {
+        width: 20px;
+        height: 20px;
+        text-align: center;
+        line-height: 20px;
+        background-color: #f00;
+        color: #fff;
+        border-radius: 10px;
+        font-size: 20px;
+        margin-right: 10px;
+    }
+
+    .yixuanapi .item span {
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .mianspan {
+        color: #fff;
+        background-color: #0d8ddb;
+        padding-left: 10px;
+        padding-right: 10px;
+        border-radius: 10px;
+        line-height: 30px;
+        height: 30px;
+    }
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>拆单</h5>
+                    <div class="ibox-tools">
+
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <form method="post" class="form-horizontal" action="{:U('batch_apart_do')}">
+                        <div class="form-group ">
+                            <div class="col-sm-12" style="color:#f00;">
+                                当前操作是筛选条件的所有“待充值、部分充值、压单”订单，也会自动剔除拆出来的单，不是多选框勾选的订单；指定套餐产品：选择类型、分类、套餐查询；指定订单：输入单号、手机号查询；指定代理：指定用户ID查询；
+                            </div>
+                            <div class="col-sm-12">
+                                1、当前筛选结果订单<span class="text-danger" style="font-size: 20px">{$_total}</span>条，在下方添加批量提交的api！
+                                (为保障安全，系统已经强制筛选了“待充值、部分充值、压单”状态订单，其他状态订单会被过滤)<br/>
+                                2、拆单以后会生成新订单，如果新订单的产品配置了接口充值，将自动提交到渠道进行充值！
+                                <input type="hidden" value="{$_ids}" name="ids"/>
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <div class="col-sm-4">
+                                <label>产品分类<span style="margin-left: 8px;color: #aaa;"></span></label>
+                                <select class="form-control m-b" name="cate_id">
+                                    <option value="0">请选择</option>
+                                    {volist name="cates" id="to"}
+                                    <option value="{$to.id}">{$to.cate}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <label>套餐<span style="margin-left: 8px;color: #aaa;"></span></label>
+                                <select class="form-control m-b" name="product_id">
+                                    <option value="0">请选择</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <label>单数<span style="margin-left: 8px;color: #aaa;"></span></label>
+                                <input type="text" class="form-control m-b" placeholder="" value="1" id="num"/>
+                            </div>
+                            <div class="col-sm-2">
+                                <label>*</label>
+                                <button type="button" class="btn btn-primary form-control" onclick="addItem()">
+                                    添加
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            {neq name="is_same" value="1"}
+                            <div class="col-sm-12" style="color: #ff0000;font-size: 20px;">订单中有不同面值套餐，请检查，以免造成损失!</div>
+                            {/neq}
+                            <div class="col-sm-12" style="color: #ff0000;">
+                                订单中有面值：
+                                {volist name="miangroup" id="vo"}
+                                <span class="mianspan">{$vo.mianzhi}</span>
+                                {/volist}
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <div class="col-sm-12">
+                                <label>已经设置要生成的订单<span style="margin-left: 8px;color: #aaa;"></span></label>
+                            </div>
+                            <div class="col-sm-12 yixuanapi">
+
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <div class="col-sm-12" id="mianzhitishi" style="color: #ff0000;font-size: 20px;"></div>
+                        </div>
+                        <div class="form-group" style="margin-top: 20px">
+                            <div class="col-sm-12">
+                                <button type="submit" class="btn btn-primary ajax-post" target-form="form-horizontal">
+                                    立马拆单
+                                </button>
+                                <a type="button" class="btn btn-white" href="javascript:history.go(-1);">返回</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__JS__/ajaxfileupload.js" type="text/javascript"></script>
+<script>
+    window.changeIMG = function (name, res) {
+        $("#" + name).attr("src", res);
+        $("[name=" + name + "]").val(res);
+    }
+    $("[name=cate_id]").change(function () {
+        var cate_id = $(this).children('option:selected').val();
+        $.post("{:U('product/get_product')}", {cate_id: cate_id}, function (result) {
+            $("[name=product_id]").empty();
+            $("[name=product_id]").append("<option  value='0' >请选择</option>");
+            for (var i = 0; i < result.data.length; i++) {
+                var item = result.data[i];
+                $("[name=product_id]").append("<option  value=" + item.id + ">" + item.name + "</option>");
+            }
+        });
+    });
+    var mianzhi = parseFloat("{$mianzhi}");
+
+    function addItem() {
+        var product_id = $("[name=product_id]").children('option:selected').val();
+        var cate_name = $("[name=cate_id]").children('option:selected').text();
+        var product_name = $("[name=product_id]").children('option:selected').text();
+        var num = $("#num").val();
+        if (product_id == 0) {
+            alert('请选择分类和套餐');
+            return false;
+        }
+        appendItem(cate_name, product_name, num, product_id);
+    }
+
+    function appendItem(cate_name, product_name, num, product_id) {
+        $(".yixuanapi").append('<div class="item">' +
+            '<div class="delbtn" onclick="delItem(this)">×</div>' +
+            '<span class="bt">' + cate_name + '-' + product_name + '-' + num + '单</span>' +
+            '<input type="hidden" name="product_id[]" value="' + product_id + '"/>' +
+            '<input type="hidden" class="num" data-product_name="' + product_name + '" name="num[]" value="' + num + '"/>' +
+            '</div>');
+        checkmianzhi();
+    }
+
+    function delItem(obj) {
+        $(obj).parent().remove();
+        checkmianzhi();
+    }
+
+    function checkmianzhi() {
+        var curmain = 0;
+        $.each($(".yixuanapi .num"), function (index, don) {
+            curmain += parseFloat($(this).data('product_name').replace(/[^0-9]/ig, "")) * parseFloat($(this).val());
+        });
+        if (mianzhi == curmain) {
+            $("#mianzhitishi").text("");
+        } else {
+            $("#mianzhitishi").text("当前拆单后总面值:" + curmain + "，原订单面值:" + mianzhi + ";拆开订单的面值与订单原面值不匹配，请知晓(仅做提示，依然可以提交)");
+        }
+    }
+</script>
+</body>
+
+</html>

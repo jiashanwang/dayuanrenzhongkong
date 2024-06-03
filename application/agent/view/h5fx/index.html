@@ -1,0 +1,146 @@
+{include file="public/header" /}
+<style>
+
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>功能</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="form-group">
+                        <a class="btn btn-sm btn-white open-reload"><i
+                                class="glyphicon glyphicon-repeat"></i></a>
+                        <a class="btn btn-sm btn-info open-window" target-form="i-checks"
+                                href="{:U('h5base/weixin')}" title="基本配置">
+                            基本配置
+                        </a>
+                        {eq name="weixin.type" value="1"}
+                        <a class="btn btn-sm btn-info open-window no-refresh" target-form="i-checks"
+                                href="{:U('weixin/menu')}" title="公众号菜单">
+                            公众号菜单
+                        </a>
+                        <a class="btn btn-sm btn-info open-window no-refresh" target-form="i-checks"
+                                href="{:U('weixin/templetmsg')}" title="模板消息">
+                            模板消息
+                        </a>
+                        <a class="btn btn-sm btn-info open-window no-refresh" target-form="i-checks"
+                                href="{:U('weixin/material')}" title="素材获取">
+                            素材获取
+                        </a>
+                        <a class="btn btn-sm btn-info open-window no-refresh" target-form="i-checks"
+                                href="{:U('weixin/reply')}" title="自动回复">
+                            自动回复
+                        </a>
+                        {/eq}
+                        <a class="btn btn-sm btn-info open-window no-refresh" target-form="i-checks"
+                                href="{:U('ad/pindex')}" title="广告位">
+                            广告位
+                        </a>
+                        <a class="btn btn-sm btn-info open-window no-refresh" target-form="i-checks"
+                           href="{:U('help')}" title="帮助中心">
+                            帮助中心
+                        </a>
+                        <a class="btn btn-sm btn-info open-window no-refresh" target-form="i-checks"
+                           href="{:U('weixin/url')}" title="客户端地址">
+                            客户端地址
+                        </a>
+                        <a class="btn btn-sm btn-info open-window no-refresh" target-form="i-checks"
+                                href="{:U('product/type')}" title="类型管理">
+                            产品类型管理
+                        </a>
+                        <a class="btn btn-sm btn-info open-window no-refresh" target-form="i-checks"
+                           href="{:U('product/cate')}" title="分类管理">
+                            产品分类管理
+                        </a>
+                        <a class="btn btn-sm btn-info open-window no-refresh" target-form="i-checks"
+                           href="{:U('customer')}" title="客户列表">
+                            客户列表
+                        </a>
+                        <a class="btn btn-sm btn-info open-window no-refresh" target-form="i-checks"
+                                href="{:U('orders')}" title="订单列表">
+                            订单列表
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>分销地址</h5>
+                </div>
+                <div class="ibox-content">
+                    <p class="js-copy" data-clipboard-text="{$weixin.url}">地址：{$weixin.url}</p>
+                    <div class="hr-line-dashed"></div>
+                    <div id="weixinqrid"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>客户端信息</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="hr-line-dashed"></div>
+                            <p>页面标题：{$weixin.name}</p>
+                            <p title="获取：设置与开发-公众号开发信息-开发者ID(AppID)" class="js-copy" data-clipboard-text="{$weixin.appid}">appid：{$weixin.appid}</p>
+                            <p title="生成：设置与开发-公众号开发信息-开发者密码(AppSecret)" class="js-copy" data-clipboard-text="{$weixin.appsecret}">
+                                appsecret：{$weixin.appsecret}</p>
+                            {eq name="weixin.type" value="1"}
+                            <div class="hr-line-dashed"></div>
+                            <p style="color:#ff0000;">配置公众号服务地址的时候务必选择明文模式,否则无法使用</p>
+                            <p title="设置：设置与开发-基本配置-IP白名单">服务器IP：<?php echo gethostbyname($_SERVER['SERVER_NAME']);?></p>
+                            <p title="设置：设置与开发-公众号设置-功能设置">授权域名/JS接口安全域名/网页授权域名：<?php echo $_SERVER['SERVER_NAME'];?></p>
+                            <p title="设置：设置与开发-基本配置-服务器配置-服务器地址" class="js-copy" data-clipboard-text="{$weixin.apiurl}">服务器地址：{$weixin.apiurl}</p>
+                            <p title="设置：设置与开发-基本配置-服务器配置-令牌" class="js-copy" data-clipboard-text="{$weixin.token}">令牌(Token)：{$weixin.token}</p>
+                            <p title="设置：设置与开发-基本配置-服务器配置-消息加解密密钥" class="js-copy" data-clipboard-text="{$weixin.encodingaeskey}">
+                                消息加解密密钥（EncodingAESKey）：{$weixin.encodingaeskey}</p>
+                            <p title="设置：设置与开发-基本配置-服务器配置-消息加解密方式">消息加解密方式：明文模式</p>
+                            <p>状态：{$weixin.status}</p>
+                            {/eq}
+                            <div class="hr-line-dashed"></div>
+                            <p title="获取：账户中心-个人信息-登录账号" class="js-copy" data-clipboard-text="{$weixin.mch_id}">商户号：{$weixin.mch_id}</p>
+                            <p title="设置：账户中心-api安全-设置APIv2密钥" class="js-copy" data-clipboard-text="{$weixin.key}">支付秘钥：{$weixin.key}</p>
+                            <p title="生成：账户中心-api安全-申请API证书">支付证书cert：{$weixin.cert_pem?'已上传':'未上传'}</p>
+                            <p title="生成：账户中心-api安全-申请API证书">支付证书key：{$weixin.key_pem?'已上传':'未上传'}</p>
+                            <p title="添加：产品中心-开发配置-JSAPI支付" class="js-copy" data-clipboard-text="{:C('WEB_URL')}">JSAPI支付目录：{:C('WEB_URL')}</p>
+                        </div>
+                    </div>
+                    <div style="clear: both;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="__JS__/qrcode.min.js"></script>
+<script>
+    var qrcode = new QRCode(document.getElementById("weixinqrid"), {
+        text: "{$weixin.url}",
+        width: 300,
+        height: 300,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+    });
+</script>
+<script>
+    var btn = document.getElementsByClassName("js-copy");
+    var clipboard = new Clipboard(btn);//实例化
+    //复制成功执行的回调，可选
+    clipboard.on('success', function (e) {
+        layer.msg('复制成功！');
+    });
+    //复制失败执行的回调，可选
+    clipboard.on('error', function (e) {
+        layer.msg('复制失败！');
+    });
+</script>
+</html>

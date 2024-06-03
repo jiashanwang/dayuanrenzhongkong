@@ -1,0 +1,848 @@
+{include file="public/header" /}
+<style>
+    .table-bordered > tbody > tr:hover {
+        background-color: #f5f5f5
+    }
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5><span title="当前筛选订单结果总单数">订单列表（结果{$_total}条）</span>&nbsp;&nbsp;
+                        <span title="当前筛选订单结果总支付金额，不限制订单状态">结果总金额：￥{$total_price}</span>&nbsp;&nbsp;
+                        <span title="成功订单的支付总金额">成功单总金额：￥{$sus_total_price}</span>&nbsp;
+                        <span title="已经成功返利的金额">成功单返利金额：￥{$rebate_price}</span>&nbsp;
+                        <span title="利润=成功订单总金额-提交接口的成本-分销返利">成功单利润：￥{:sprintf("%.2f",$sus_total_price-$sus_cost-$rebate_price)}</span>
+                        <span title="部分成功单总金额"> 部分成功总金额：￥{$apsus_total_price}</span>
+                        <span title="部分成功单返利金额"> 部分成功返利金额：￥{$aprebate_price}</span>
+                        <span title="部分利润=部分成功订单总金额-提交接口的成本-分销返利">部分成功单利润：￥{:sprintf("%.2f",$apsus_total_price-$apsus_cost-$aprebate_price)}</span>
+                        <span style="color: #f00" title="此统计仅供参考，受成本变化及具体订单操作的流程影响，统计可能不准确">此统计仅供参考</span>
+                    </h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row input-groups">
+                        <div class="col-md-12 m-b-xs form-inline text-left">
+                            <div class="form-group">
+                                <label class="control-label">时间:</label>
+                                <select class="input-sm form-control input-s-sm inline" name="time_style"
+                                        style="width: auto;">
+                                    <option value="create_time"
+                                    <?php if(I('time_style')=='create_time'){ echo "selected='selected'"; } ?>
+                                    >下单时间</option>
+                                    <option value="apireq_time"
+                                    <?php if(I('time_style')=='apireq_time'){ echo "selected='selected'"; } ?>
+                                    >提单时间</option>
+                                    <option value="finish_time"
+                                    <?php if(I('time_style')=='finish_time'){ echo "selected='selected'"; } ?>
+                                    >完成时间</option>
+                                    <option value="apifail_time"
+                                    <?php if(I('time_style')=='apifail_time'){ echo "selected='selected'"; } ?>
+                                    >失败时间</option>
+                                    <option value="refund_time"
+                                    <?php if(I('time_style')=='refund_time'){ echo "selected='selected'"; } ?>
+                                    >退款时间</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <span class="control-label">日期:</span>
+                                <input type="text" name="begin_time" id="begin_time" value="{:I('begin_time')}"
+                                       class="input-sm input-s-sm form-control" autocomplete="off" placeholder="开始时间"/>
+                                <span class="control-label">-</span>
+                                <input type="text" name="end_time" id="end_time" value="{:I('end_time')}"
+                                       class="input-sm input-s-sm form-control" autocomplete="off" placeholder="结束时间"/>
+                            </div>
+                            <div class="form-group">
+                                <?php $client=C('CLIENT_TYPE'); ?>
+                                <label class="control-label">渠道:</label>
+                                <select class="input-sm form-control input-s-sm inline serach_selects"
+                                        name="client"
+                                        style="width: auto;">
+                                    <option value="0">请选择</option>
+                                    {volist name="client" id="vo"}
+                                    <option value="{$key}"
+                                    <?php if(I('client')==$key){ echo "selected='selected'"; } ?>>{$vo}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">类型:</label>
+                                <select class="input-sm form-control input-s-sm inline serach_selects" name="type"
+                                        style="width: auto;">
+                                    <option value="0">请选择</option>
+                                    {volist name="_types" id="vo"}
+                                    <option value="{$vo.id}"
+                                    <?php if(I('type')==$vo['id']){ echo "selected='selected'"; } ?>
+                                    >{$vo.type_name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">分类:</label>
+                                <select class="input-sm form-control input-s-sm inline serach_selects" name="cate"
+                                        style="width: auto;">
+                                    <option value="0">请选择</option>
+                                    {notempty name="cates"}
+                                    {volist name="cates" id="vo"}
+                                    <option value="{$vo['id']}"
+                                    <?php if(I('cate')==$vo['id']){ echo "selected='selected'"; } ?>>{$vo.cate}</option>
+                                    {/volist}
+                                    {/notempty}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">套餐:</label>
+                                <select class="input-sm form-control input-s-sm inline serach_selects" name="product_id"
+                                        style="width: auto;">
+                                    <option value="0">请选择</option>
+                                    {notempty name="products"}
+                                    {volist name="products" id="vo"}
+                                    <option value="{$vo['id']}"
+                                    <?php if(I('product_id')==$vo['id']){ echo "selected='selected'"; } ?>
+                                    >{$vo.name}</option>
+                                    {/volist}
+                                    {/notempty}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <?php $isps=C('ISP_TEXT');?>
+                                <label class="control-label">运营商:</label>
+                                <select class="input-sm form-control input-s-sm inline serach_selects" name="isp"
+                                        style="width: auto;">
+                                    <option value="0">请选择</option>
+                                    {volist name="isps" id="vo"}
+                                    <option value="{$key}"
+                                    <?php if(I('isp')==$key){ echo "selected='selected'"; } ?>>{$vo}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <?php $payway=C('PAYWAY'); ?>
+                                <label class="control-label">支付:</label>
+                                <select class="input-sm form-control input-s-sm inline serach_selects"
+                                        name="pay_way"
+                                        style="width: auto;">
+                                    <option value="0">请选择</option>
+                                    {volist name="payway" id="vo"}
+                                    <option value="{$key}"
+                                    <?php if(I('pay_way')==$key){ echo "selected='selected'"; } ?>>{$vo}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" title="默认只显示主单，不会显示拆出子单">拆单:</label>
+                                <select class="input-sm form-control input-s-sm inline serach_selects" name="is_apart"
+                                        style="width: auto;">
+                                    <option value="0">请选择</option>
+                                    <option value="1"
+                                    <?php if(I('is_apart')==1){ echo "selected='selected'"; } ?>>未被拆</option>
+                                    <option value="2"
+                                    <?php if(I('is_apart')==2){ echo "selected='selected'"; } ?>>子单</option>
+                                    <option value="3"
+                                    <?php if(I('is_apart')==3){ echo "selected='selected'"; } ?>>被拆</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" title="提交了申请退款请求，还未退的可以查询">申请退单:</label>
+                                <select class="input-sm form-control input-s-sm inline serach_selects"
+                                        name="apply_refund" style="width: auto;">
+                                    <option value="0">请选择</option>
+                                    <option value="1"
+                                    <?php if(I('apply_refund')==1){ echo "selected='selected'"; } ?>>否</option>
+                                    <option value="2"
+                                    <?php if(I('apply_refund')==2){ echo "selected='selected'"; } ?>>是</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <?php $statusarr=C('PORDER_STATUS');?>
+                                <label class="control-label">状态:</label>
+                                <select class="input-sm form-control input-s-sm inline serach_selects" name="status"
+                                        style="width: auto;">
+                                    <option value="0">请选择</option>
+                                    {volist name="statusarr" id="vo"}
+                                    <option value="{$key}"
+                                    <?php if(I('status')==$key){ echo "selected='selected'"; } ?>>{$vo}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">接口:</label>
+                                <select class="input-sm form-control input-s-sm inline serach_selects"
+                                        name="reapi_id"
+                                        style="width: auto;">
+                                    <option value="0">请选择</option>
+                                    {volist name="reapi" id="vo"}
+                                    <option value="{$vo['id']}"
+                                    <?php if(I('reapi_id')==$vo['id']){ echo "selected='selected'"; } ?>
+                                    >{$vo.name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" title="回调状态">回调:</label>
+                                <select class="input-sm form-control input-s-sm inline serach_selects"
+                                        name="is_notification" style="width: auto;">
+                                    <option value="0">请选择</option>
+                                    <option value="1"
+                                    <?php if(I('is_notification')==1){ echo "selected='selected'"; } ?>>否</option>
+                                    <option value="2"
+                                    <?php if(I('is_notification')==2){ echo "selected='selected'"; } ?>>是</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label">批量手机:</label>
+                                <textarea name="batch_mobile" class="form-control"
+                                          placeholder="批量手机查询，多个回车分割">{:I('batch_mobile')}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">批量单号:</label>
+                                <textarea name="batch_order_number" class="form-control"
+                                          placeholder="批量单号查询，多个回车分割">{:I('batch_order_number')}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">批量api单号:</label>
+                                <textarea name="batch_api_order_number" class="form-control"
+                                          placeholder="批量单号查询，多个回车分割">{:I('batch_api_order_number')}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">排序:</label>
+                                <select class="input-sm form-control input-s-sm inline serach_selects" name="sort"
+                                        style="width: auto;">
+                                    <option value="">默认</option>
+                                    <option value="create_time desc"
+                                    <?php if(I('sort')=='create_time desc'){ echo "selected='selected'"; } ?>
+                                    >下单时间</option>
+                                    <option value="finish_time desc"
+                                    <?php if(I('sort')=='finish_time desc'){ echo "selected='selected'"; } ?>
+                                    >完成时间</option>
+                                    <option value="refund_time desc"
+                                    <?php if(I('sort')=='refund_time desc'){ echo "selected='selected'"; } ?>
+                                    >退款时间</option>
+                                    <option value="notification_time desc"
+                                    <?php if(I('sort')=='notification_time desc'){ echo "selected='selected'"; } ?>
+                                    >回调时间</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">查询条件:</label>
+                                <select class="input-sm form-control input-s-sm inline" name="query_name"
+                                        style="width: auto;">
+                                    <option value="">模糊</option>
+                                    <option value="customer_id"
+                                    <?php if(I('query_name')=='customer_id'){ echo "selected='selected'"; } ?>
+                                    >用户ID</option>
+                                    <option value="order_number"
+                                    <?php if(I('query_name')=='order_number'){ echo "selected='selected'"; } ?>
+                                    >订单号</option>
+                                    <option value="apart_order_number"
+                                    <?php if(I('query_name')=='apart_order_number'){ echo "selected='selected'"; } ?>
+                                    >拆单原单号</option>
+                                    <option value="mobile"
+                                    <?php if(I('query_name')=='mobile'){ echo "selected='selected'"; } ?>>手机号</option>
+                                    <option value="rebate_id"
+                                    <?php if(I('query_name')=='rebate_id'){ echo "selected='selected'"; } ?>
+                                    >返利ID</option>
+                                    <option value="isp"
+                                    <?php if(I('query_name')=='isp'){ echo "selected='selected'"; } ?>
+                                    >运营商/地区</option>
+                                    <option value="guishu"
+                                    <?php if(I('query_name')=='guishu'){ echo "selected='selected'"; } ?>
+                                    >归属地</option>
+                                    <option value="lable"
+                                    <?php if(I('query_name')=='lable'){ echo "selected='selected'"; } ?>
+                                    >标签</option>
+                                    <option value="customer.wx_openid.customer_id"
+                                    <?php if(I('query_name')=='customer.wx_openid.customer_id'){ echo "selected='selected'"; } ?>
+                                    >openid</option>
+                                    <option value="customer.weixin_appid.customer_id"
+                                    <?php if(I('query_name')=='customer.weixin_appid.customer_id'){ echo "selected='selected'"; } ?>
+                                    >appid</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input type="hidden" name="customer_id" value="{:I('customer_id')}">
+                                    <input type="hidden" name="apart_order_number" value="{:I('apart_order_number')}">
+                                    <input type="text" name="key" placeholder="请输入套餐/单号/手机号/归属地/备注" value="{:I('key')}"
+                                           class="input-sm form-control">
+                                    <span class="input-group-btn"><button type="button" id="search"
+                                                                          class="btn btn-sm btn-primary"
+                                                                          url="{:U('index')}"> 搜索</button></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button type="button" id="excel"
+                                        class="btn btn-sm btn-primary"
+                                        url="{:U('out_excel')}" title="筛选条件中的所有订单">
+                                    <i class="fa fa-file-text-o"></i>
+                                    导出
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <button type="button"
+                                        class="btn btn-sm btn-primary batchsub"
+                                        url="{:U('batch_api')}" title="筛选条件中的所有订单,会自动剔除非待充值/压单的状态">
+                                    <i class="fa fa-sign-in"></i>
+                                    批量提交接口
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <button type="button"
+                                        class="btn btn-sm btn-primary batchsub"
+                                        url="{:U('batch_apart')}" title="筛选条件中的所有订单,会自动剔除非待充值/部分充值/压单的状态，会自动剔除拆出来的单">
+                                    <i class="fa fa-sign-in"></i>
+                                    批量拆单
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <button type="button"
+                                        class="btn btn-sm btn-primary batchsub"
+                                        url="{:U('batch_sms')}" title="筛选条件中的所有订单,手机号充值的都可以发送">
+                                    <i class="fa fa-sign-in"></i>
+                                    批量短信
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-12 m-b-xs form-inline text-left" style="color: #f00">
+                            重要提示：导出、批量提交接口、批量拆单都是以条件筛选搜索的结果为准（多页），不是勾选的数据！<br/>
+                            温馨提示：刚下的订单出现待付款是正常现象，正在排队支付，无需做任何操作！
+                        </div>
+                        <div class="col-md-12 form-inline text-left">
+                            <div class="form-group">
+                                <a class="btn btn-sm btn-white open-reload"><i
+                                        class="glyphicon glyphicon-repeat"></i></a>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-sm btn-warning ajax-post" target-form="i-checks"
+                                        href="{:U('set_czing')}" title="多选框选中的订单，批量操作充值中，可操作的状态：待充值、异常、部分充值、压单">
+                                    <i class="fa fa-check-square"></i>
+                                    批量充值中
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-sm btn-info ajax-post" target-form="i-checks"
+                                        href="{:U('set_chenggong')}"
+                                        title="多选框选中的订单，批量操作成功，谨慎操作，可操作的状态：待充值、充值中、异常、部分充值、压单">
+                                    <i class="fa fa-check-square"></i>
+                                    批量成功
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-sm btn-warning ajax-post" target-form="i-checks"
+                                        href="{:U('set_shibai')}"
+                                        title="多选框选中的订单,批量操作订单失败，谨慎操作，可操作的状态：待充值、充值中、异常、部分充值、压单">
+                                    <i class="fa fa-check-square"></i>
+                                    批量失败
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-sm btn-danger ajax-post" target-form="i-checks"
+                                        href="{:U('refund')}" title="多选框选中的订单，批量操作退款，可操作的状态：充值失败">
+                                    <i class="fa fa-check-square"></i>
+                                    批量退款
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-sm btn-warning ajax-post prompt" prompt-title="批量待充值备注"
+                                        target-form="i-checks"
+                                        href="{:U('set_daicz')}"
+                                        title="多选框选中的订单，批量回到待充值状态，可操作的状态：充值成功、充值中、待付款、异常、部分充值、压单">
+                                    <i class="fa fa-check-square"></i>
+                                    批量待充值
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-sm btn-danger ajax-post" target-form="i-checks"
+                                        href="{:U('set_aprefund')}"
+                                        title="多选框选中的订单，批量申请订单直接失败，只适用已经提交api充值的订单，当api失败时立马失败，不再提交后面的接口，如果当前接口充值成功订单还是会成功，可操作的状态：充值中">
+                                    <i class="fa fa-check-square"></i>
+                                    批量申请退单
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-sm btn-success ajax-post" target-form="i-checks"
+                                        href="{:U('set_apbreak')}"
+                                        title="多选框选中的订单，批量申请订单直接失败，只适用已经提交api充值的订单，当api失败时变压单，不再提交后面的接口，如果当前接口充值成功订单还是会成功，可操作的状态：充值中">
+                                    <i class="fa fa-check-square"></i>
+                                    批量申请中断
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-sm btn-warning ajax-post" target-form="i-checks"
+                                        href="{:U('notification')}"
+                                        title="多选框选中的订单,订单自动检查需要回调的订单并进行回调">
+                                    <i class="fa fa-check-square"></i>
+                                    批量回调
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-sm btn-danger ajax-post" target-form="i-checks"
+                                        href="{:U('untlock')}"
+                                        title="多选框选中的订单,用于锁定订单出现问题时，解除锁定，以便再提api">
+                                    <i class="fa fa-unlock"></i>
+                                    解除锁定
+                                </button>
+                            </div>
+                            <!--                            <div class="form-group">-->
+                            <!--                                <a class="btn btn-sm btn-primary open-window" href="{:U('porder_excel')}" title="手动提单">-->
+                            <!--                                    <i class="fa fa-file-excel-o"></i>-->
+                            <!--                                    导入提单-->
+                            <!--                                </a>-->
+                            <!--                            </div>-->
+                            <div class="form-group">
+                                <a class="btn btn-sm btn-success open-window no-refresh" href="{:U('rihuizong')}"
+                                   title="汇总统计">
+                                    <i class="fa fa-calendar"></i>
+                                    汇总统计
+                                </a>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-sm btn-default open-window no-refresh" href="{:U('mobile_blacklist')}"
+                                   title="黑名单列表">
+                                    <i class="fa fa-calendar"></i>
+                                    黑名单列表
+                                </a>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-sm btn-success open-window no-refresh" href="{:U('complaint')}"
+                                   title="投诉管理">
+                                    <i class="fa fa-commenting"></i>
+                                    投诉管理
+                                </a>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-sm btn-info prompt ajax-post" target-form="i-checks"
+                                        prompt-title="填写自定义的标签内容"
+                                        href="{:U('lable')}">
+                                    <i class="fa fa-edit"></i>
+                                    批量标签
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-sm btn-success prompt ajax-post" target-form="i-checks"
+                                        prompt-title="填写自定义的备注内容"
+                                        href="{:U('remarks')}">
+                                    <i class="fa fa-edit"></i>
+                                    批量备注
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-sm btn-primary ajax-post" target-form="i-checks"
+                                        title="勾选中的订单重新提交到原接口内，只有待充值、压单中状态的订单才可提交"
+                                        href="{:U('batch_api_dop')}">
+                                    <i class="fa fa-edit"></i>
+                                    批量重提到接口
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-sm btn-primary prompt batch_api ajax-post" target-form="i-checks"
+                                        title="勾选中的订单提交到新接口内，只有待充值、压单中状态的订单才可提交"
+                                        href="{:U('batch_api')}">
+                                    <i class="fa fa-edit"></i>
+                                    批量提交到接口
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-sm btn-danger prompt ajax-post" target-form="i-checks"
+                                        title="填写充值完成的面值(0<充值面值<订单总面值)，勾选的订单完成的面值需一致，请注意"
+                                        href="{:U('set_partsus')}">
+                                    <i class="fa fa-edit"></i>
+                                    批量部分完成
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-sm btn-success prompt batch_create_time ajax-post" target-form="i-checks"
+                                        prompt-title="填写自定义的时间，例:<?php echo date('Y-m-d H:i:s');?>"
+                                        href="{:U('query/set_porder_time')}">
+                                    <i class="fa fa-edit"></i>
+                                    批量下单时间
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-sm btn-success prompt batch_finish_time ajax-post" target-form="i-checks"
+                                        prompt-title="填写自定义的时间，例:<?php echo date('Y-m-d H:i:s');?>"
+                                        href="{:U('query/set_porder_time')}">
+                                    <i class="fa fa-edit"></i>
+                                    批量完成时间
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th><input type="checkbox" class="i-checks check-all">全选</th>
+                                <th>单号</th>
+                                <th>客户</th>
+                                <th>套餐</th>
+                                <th>充值账号</th>
+                                <th>充值前后余额</th>
+                                <th>状态</th>
+                                <th>时间</th>
+                                <th>渠道/支付</th>
+                                <th>金额</th>
+                                <th>返利</th>
+                                <th style="min-width: 150px">接口充值</th>
+                                <th>备注</th>
+                                <th>返回</th>
+                                <th>标签</th>
+                                <th>回调/次数</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name="_list" id="vo"}
+                            <tr>
+                                <td style="width: 70px;">
+                                    <input type="checkbox" class="i-checks ids" name="id[]" value="{$vo.id}">
+                                </td>
+                                <td style="font-size: 12px;">
+                                    <span class="js-copy"
+                                          data-clipboard-text="{$vo.order_number}">{$vo.order_number}</span><br/>
+                                    {notempty name="vo.out_trade_num"}
+                                    <span class="js-copy" data-clipboard-text="{$vo.out_trade_num}">商户单号：{$vo.out_trade_num}</span><br/>
+                                    {/notempty}
+                                    {eq name="vo.is_apart" value="1"}
+                                    <span class="js-copy" data-clipboard-text="{$vo.apart_order_number}">来自拆单：{$vo.apart_order_number}</span><br/>
+                                    {/eq}
+                                    {eq name="vo.is_apart" value="2"}
+                                    子单：<a class="text-success open-window no-refresh"
+                                          href="{:U('index',['apart_order_number'=>$vo['order_number'],'is_apart'=>2])}">{$vo.order_number|getApartOrderNum}</a>
+                                    {/eq}
+                                </td>
+                                <td>
+                                    <div style="max-width: 100px;overflow-x: scroll;font-size: 12px;white-space:nowrap;">
+                                        [<a class="text-success open-window no-refresh"
+                                            href="{:U('customer/index',['id'=>$vo['customer_id']])}">ID:{$vo.customer_id}</a>]&nbsp;{$vo.username}
+                                    </div>
+                                </td>
+                                <td>
+                                    <a style="color:green">{$vo.type_name}</a>[<a class="text-success open-window no-refresh"
+                                        href="{:U('product/index',['id'=>$vo['product_id'],'type'=>$vo['type']])}">ID:{$vo.product_id}</a>]<br/>
+                                        {$vo.product_name}
+                                </td>
+                                <td class="js-copy" data-clipboard-text="{$vo.mobile}">
+                                    <span title="充值账号，手机号，户号等">{$vo.mobile}</span><br/>
+                                    {$vo.guishu}{$vo.isp}<br/>
+                                    {if condition="$vo.param1 || $vo.param2 || $vo.param3"}
+                                    <span title="此栏目的值分别代表param1,param2,param3">{$vo.param1}/{$vo.param2}/{$vo.param3}</span>
+                                    {/if}
+                                </td>
+                                
+                                <td  style="width: 120px;">
+                                    
+                                    {if condition="($vo['type']==1&&in_array(C('HFYE_API_TYPE_STSTUS'),[1,3]))||($vo['type']==3&&in_array(C('HFYE_API_TYPE_STSTUS'),[2,3]))"}
+                                        充值前：
+                                            {if empty($vo.phone_balance_a)}
+                                                <!--a class="open-window no-refresh" href="{:U('phone_query',['id'=>$vo['id']])}" title="查询余额">查余额</a-->
+                                                <span style="color:blue;" id="phone_balance_a_{$vo.id}">{$vo.phone_balance_a|default='-'}</span>
+                                                <a class="text-info recharge" onclick="phone_query({$vo.id},'a')">查询</a>
+                                            {/if}
+                                            {if !empty($vo.phone_balance_a)}
+                                                <span style="color:blue;">{$vo.phone_balance_a|default='-'}</span>
+                                            {/if}
+                                        <br/>
+                                        充值后：
+                                            {if empty($vo.phone_balance_b)}
+                                                <!--a class="open-window no-refresh" href="{:U('phone_query',['id'=>$vo['id']])}" title="查询余额">查余额</a-->
+                                                <span style="color:blue;" id="phone_balance_b_{$vo.id}">{$vo.phone_balance_b|default='-'}</span>
+                                                <a class="text-info recharge" onclick="phone_query({$vo.id},'b')">查询</a>
+                                            {/if}
+                                            {if !empty($vo.phone_balance_b)}
+                                                <span style="color:blue;">{$vo.phone_balance_b|default='-'}</span>
+                                            {/if}
+                                        <br/>
+                                        余额：<span style="color:blue;" id="phone_balance_n_{$vo.id}">{$vo.phone_balance_n|default='-'}</span>
+                                                <a class="text-info recharge" onclick="phone_query({$vo.id},'n')">查询</a>
+                                    {/if}
+                                </td>
+                                <td class="open-window" href="{:U('upstatus',['id'=>$vo['id']])}" title="修改状态">
+                                    {switch name="vo.status"}
+                                    {case value="1"}
+                                    <span class="label label-default">
+                                    {:C('PORDER_STATUS')[$vo['status']]}
+                                    </span>
+                                    {/case}
+                                    {case value="2"}
+                                    <span class="label label-success">
+                                    {:C('PORDER_STATUS')[$vo['status']]}
+                                    </span>
+                                    {/case}
+                                    {case value="3"}
+                                    <span class="label label-warning">
+                                    {:C('PORDER_STATUS')[$vo['status']]}
+                                    </span>
+                                    {/case}
+                                    {case value="4"}
+                                    <span class="label label-primary">
+                                    {:C('PORDER_STATUS')[$vo['status']]}
+                                    </span>
+                                    {/case}
+                                    {case value="5"}
+                                    <span class="label label-danger">
+                                    {:C('PORDER_STATUS')[$vo['status']]}
+                                    </span>
+                                    {/case}
+                                    {case value="6"}
+                                    <span class="label label-default">
+                                    {:C('PORDER_STATUS')[$vo['status']]}
+                                    </span>
+                                    {/case}
+                                    {case value="8"}
+                                    <span class="label label-danger">
+                                    {:C('PORDER_STATUS')[$vo['status']]}
+                                    </span>
+                                    {/case}
+                                    {case value="9"}
+                                    <span class="label label-warning">
+                                    {:C('PORDER_STATUS')[$vo['status']]}
+                                    </span>
+                                    {/case}
+                                    {case value="10"}
+                                    <span class="label label-success" title="压单订单可人工再次提交api">
+                                    {:C('PORDER_STATUS')[$vo['status']]}
+                                    </span>
+                                    {/case}
+                                    {case value="11"}
+                                    <span class="label label-warning"
+                                          title="拆单订单不能再提交API,可以将拆出的订单提交api，全部订单都成功或者失败的情况下回自动改变状态并回调，如果是部分成功或者失败的会保留状态人工处理">
+                                    {:C('PORDER_STATUS')[$vo['status']]}
+                                    </span>
+                                    {/case}
+                                    {case value="12"}
+                                    <span class="label label-primary" title="压单订单可人工再次提交api">
+                                    {:C('PORDER_STATUS')[$vo['status']]}
+                                    </span>
+                                    {/case}
+                                    {case value="13"}
+                                    <span class="label label-danger">
+                                    {:C('PORDER_STATUS')[$vo['status']]}
+                                    </span>
+                                    {/case}
+                                    {default /}
+                                    <span class="label label-default">
+                                    {:C('PORDER_STATUS')[$vo['status']]}
+                                    </span>
+                                    {/switch}
+                                    {eq name="vo.apply_refund" value="1"}
+                                    <br/><br/><span title="申请退单的状态并不一定会退单，如果当前接口回调充值成功，订单也会变成充值成功">申请退单中..</span>
+                                    {/eq}
+                                    {eq name="vo.apply_break" value="1"}
+                                    <br/><br/><span
+                                        title="申请中断的状态，如果当前api回调充值成功，订单会变成充值成功，如果api充值失败，订单回到压单状态">申请中断..</span>
+                                    {/eq}
+                                    {gt name="vo.tlocking" value="0"}
+                                    <br/><br/><span title="订单在执行耗时任务，待执行完成后方可进行其他操作">锁定{$vo.tlocking}</span>
+                                    {/gt}
+                                </td>
+                                <td>
+                                    <div style="max-height: 85px;overflow-y: scroll;width:155px; font-size: 12px;padding: 2px;">
+                                        <span style="color: #e33;font-size: 12px;border: 1px solid #dd9999;">
+                                            耗时: {:elapsed_time($vo['create_time'],$vo['finish_time'])}
+                                        </span><br/>
+                                        下单: {$vo.create_time|time_format}<br/>
+                                        完成: {$vo.finish_time|time_format}<br/>
+                                        api上单:{$vo.apireq_time|time_format}<br/>
+                                        api失败:{$vo.apifail_time|time_format}<br/>
+                                        支付：{$vo.pay_time|time_format}<br/>
+                                        退款：[￥{$vo.refund_price}]&nbsp;{$vo.refund_time|time_format}<br/>
+                                        回调：{$vo.notification_time|time_format}
+                                    </div>
+                                </td>
+                                <td>
+                                    渠道:{:C('CLIENT_TYPE')[$vo.client]}<br/>
+                                    支付:{:C('PAYWAY')[$vo.pay_way]}<br/>
+                                </td>
+                                <td>{$vo.total_price}</td>
+                                <td style="font-size: 12px;">
+                                    {gt name="vo.rebate_id" value="0"}
+                                    [1]代理：{$vo.rebate_id|get_name}<br/>金额：{$vo.rebate_price}<br/>状态：{$vo.is_rebate?'已返利':'未返利'}<br/>
+                                    {/gt}
+                                    {gt name="vo.rebate_id2" value="0"}
+                                    [2]代理：{$vo.rebate_id2|get_name}<br/>金额：{$vo.rebate_price2}<br/>状态：{$vo.is_rebate2?'已返利':'未返利'}
+                                    {/gt}
+                                </td>
+                                <td>
+                                    <div style="max-height: 100px;overflow-y: scroll;font-size: 12px;">
+                                        {eq name="vo.api_open" value="1"}
+                                        <?php $apiarr = json_decode($vo['api_arr'],true);?>
+                                        {volist name="apiarr" id="ap" key="key"}
+                                        <a style="color:#0072E3">
+                                        {$key}.
+                                        {$vo['api_cur_index']==$key-1?'[当前]':''}{$ap.reapi_id|getReapiName}-{$ap.param_id|getReapiParamName}</a><br/>
+                                        {/volist}
+                                        {notempty name="apireq_time"}
+                                        提交时间：{$vo.apireq_time|time_format}
+                                        {/notempty}
+                                        {else/}
+                                        {$vo.api_open?'打开':'关闭'}
+                                        {/eq}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="max-height: 100px;overflow-y: scroll;font-size: 12px;width: 80px">
+                                        {$vo.remark}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="max-height: 100px;overflow-y: scroll;font-size: 12px;width: 70px">
+                                        卡密/流水：<a class="js-copy"
+                                          data-clipboard-text="{$vo.charge_kami}">{$vo.charge_kami}</a><br/>
+                                        已充：
+                                        {gt name="vo.charge_amount" value="0"}
+                                        {$vo.charge_amount}
+                                        {else/}
+                                        -
+                                        {/gt}
+                                    </div>
+                                </td>
+                                <td><p style="color:#e00;">{$vo.lable}</p>
+                                    <a class="open-window" href="{:U('lable?id='.$vo.id)}"
+                                       title="详情"><i class="fa fa-edit"></i></a>
+                                </td>
+                                <td>
+                                    {eq name="vo.is_apart" value="0"}
+                                    <?php $jdid = C('JDCONFIG.userid');$ksid = C('KSCONFIG.userid');?>
+                                    {if condition="$vo.customer_id==$jdid || $vo.customer_id==$ksid || $vo.client==4"}
+                                    {$vo.is_notification?'已回调':'未回调'}/{$vo.notification_num}<br/>
+                                    <span class="tiptext text-success" data-text='{$vo.notify_url}'>地址</span><br/>
+                                    <a class="text-danger ajax-get confirm" href="{:U('notification?id='.$vo.id)}"
+                                       title="手动回调">手动回调</a>
+                                    {/if}
+                                    {/eq}
+                                </td>
+                                <td>
+                                    <a class="open-window no-refresh" href="{:U('log?id='.$vo.id)}"
+                                       title="详情">日志</a>
+                                    {in name="vo.status" value="1"}
+                                    <a class="text-danger ajax-get confirm" href="{:U('deletes?id='.$vo.id)}"
+                                       title="删除">删除</a>
+                                    {/in}
+                                    {in name="vo.status" value="2,8,10"}
+                                    <a class="text-warning ajax-get confirm" href="{:U('set_czing?id='.$vo.id)}"
+                                       title="将订单设置为充值中，一般手工单才这样做">设为充值中</a>
+                                    {/in}
+                                    {in name="vo.status" value="2,3,8,9,10,11"}
+                                    <a class="ajax-get confirm" href="{:U('set_chenggong?id='.$vo.id)}"
+                                       title="将订单设置为充值成功">充值成功</a>
+                                    <a class="text-danger ajax-get confirm" href="{:U('set_shibai?id='.$vo.id)}"
+                                       title="将订单设置为充值失败，谨慎操作">充值失败</a>
+
+                                    {/in}
+                                    {in name="vo.is_apart" value="0,2"}
+                                    {in name="vo.status" value="2,3,8,9,10,11"}
+                                    <a class="text-warning ajax-get confirm prompt"
+                                       prompt-title="填写充值完成的面值(0<充值面值<订单总面值)" href="{:U('set_partsus?id='.$vo.id)}"
+                                       title="操作部分充值完成，输入充值的面值">部分完成</a>
+                                    {/in}
+                                    {/in}
+                                    {in name="vo.status" value="4"}
+                                    <a class="text-warning open-window no-refresh"
+                                       href="{:C('WEB_URL')}yrapi.php/open/voucher/id/{$vo.id}.html"
+                                       title="凭证">凭证</a>
+                                    {/in}
+                                    {in name="vo.status" value="5,12"}
+                                    <a class="text-danger ajax-get confirm" href="{:U('refund?id='.$vo.id)}"
+                                       title="操作退款">操作退款</a>
+                                    {/in}
+                                    <a class="open-window no-refresh" style="color: #000"
+                                       href="{:U('edit_moible_blacklist?mobile='.$vo.mobile)}"
+                                       title="加入黑名单">拉黑</a>
+                                    {in name="vo.status" value="2,10"}
+                                    <a class="text-danger ajax-get confirm"
+                                       href="{:U('batch_api_dos')}?ids={$vo.id}&reapi_param_id={$vo.api_cur_param_id}&num=1"
+                                       title="重新提交到原接口，一般压单中、待充值、异常状态可提">重提</a>
+                                    {/in}
+                                </td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="page">
+                        {$_list->render()}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__JS__/laydate/laydate.js"></script>
+<script>
+    //执行一个laydate实例
+    laydate.render({
+        elem: '#begin_time',
+        type: 'datetime',
+        done: function (value, date, endDate) {
+            $('#begin_time').val(value);
+        }
+    });
+    laydate.render({
+        elem: '#end_time',
+        type: 'datetime',
+        done: function (value, date, endDate) {
+            $('#end_time').val(value);
+        }
+    });
+    $(".tiptext").click(function () {
+        var text = $(this).data('text');
+        layer.alert(text, {
+            skin: 'layui-layer-molv' //样式类名
+            , closeBtn: 0
+        }, function () {
+            layer.closeAll();
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green'
+        });
+    });
+</script>
+<script>
+    
+    function phone_query(id,type) {
+        layer.msg('查询中...', {time: 0});
+        $.ajax({
+            type: "POST",
+            url: "{:U('query/phone_query')}",
+            dataType: "json",
+            data: {
+                id:id,type:type
+            },
+            success: function(res) {
+                if (res.errno === 0) {
+                    layer.msg(res.errmsg);
+					$("#phone_balance_"+type+"_"+id).html(res.data.mobile_fee);
+                } else {
+                    layer.alert(res.errmsg, {
+                        icon: 5,
+                        skin: 'layer-ext-moon'
+                    })
+                }
+            }
+        })
+    }
+</script>
+<script>
+    var btn = document.getElementsByClassName("js-copy");
+    var clipboard = new Clipboard(btn);//实例化
+    //复制成功执行的回调，可选
+    clipboard.on('success', function (e) {
+        layer.msg('复制成功！');
+    });
+
+    //复制失败执行的回调，可选
+    clipboard.on('error', function (e) {
+        layer.msg('复制失败！');
+    });
+
+</script>
+</body>
+</html>

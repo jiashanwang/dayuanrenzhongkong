@@ -1,0 +1,121 @@
+{include file="public/header" /}
+<style>
+    .table-bordered > tbody > tr:hover {
+        background-color: #f5f5f5
+    }
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>投诉列表</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row input-groups">
+                        <div class="col-md-2 form-inline text-left">
+                            <div class="form-group">
+                                <a class="btn btn-sm btn-white open-reload"><i
+                                        class="glyphicon glyphicon-repeat"></i></a>
+                            </div>
+                        </div>
+                        <div class="col-md-10 m-b-xs form-inline text-right">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input type="hidden" name="customer_id" value="{:I('customer_id')}">
+                                    <input type="text" name="key" placeholder="请输入投诉人姓名/电话/内容/单号/充值号码"
+                                           value="{:I('key')}"
+                                           class="input-sm form-control">
+                                    <span class="input-group-btn"><button type="button" id="search"
+                                                                          class="btn btn-sm btn-primary"
+                                                                          url="{:U('complaint')}"> 搜索</button></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>订单</th>
+                                <th>投诉人</th>
+                                <th>投诉内容</th>
+                                <th>时间</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name="_list" id="vo"}
+                            <tr>
+                                <td>
+                                    单号：<a class="text-success open-window no-refresh" href="{:U('index',['key'=>$vo['order_number'],'query_name'=>'order_number'])}">{$vo.order_number}</a><br/>
+                                    充值号码：{$vo.pmobile}
+                                </td>
+                                <td>{$vo.name}<br/>
+                                    {$vo.mobile}
+                                </td>
+                                <td>{$vo.issue}</td>
+                                <td>{$vo.create_time|time_format}</td>
+                                <td>{eq name="vo.status" value="1"}
+                                    <span class="text-danger">待处理</span>
+                                    {else/}
+                                    <span class="text-info">已处理</span>
+                                    {/eq}
+                                </td>
+                                <td>
+                                    <a class="text-warn dealts" title="立即处理" data-id="{$vo.id}">立即处理</a>
+                                </td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="page">
+                        {$_list->render()}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal inmodal" id="dealtsModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <form method="post" action="{:U('deal_complaint')}" class="appidModal">
+        <div class="modal-dialog">
+            <div class="modal-content animated fadeIn">
+                <div class="modal-body">
+                    <p><strong>答复</strong></p>
+                    <div class="form-group">
+                        <input type="hidden" value="" name="id" id="dealid">
+                        <input type="text" placeholder="请输入答复内容" value=""
+                               class="form-control" name="dafu">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-white" data-dismiss="modal" onclick="closeuppwdModal()">关闭
+                    </button>
+                    <button type="submit" class="btn btn-primary ajax-post no-close" target-form="appidModal">通知客户</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    $(document).ready(function () {
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green'
+        });
+    });
+    $(".dealts").click(function () {
+        $("#dealid").val($(this).data("id"));
+        $("#dealtsModal").show();
+    });
+
+    function closeuppwdModal() {
+        $("#dealtsModal").hide();
+    }
+</script>
+</body>
+</html>

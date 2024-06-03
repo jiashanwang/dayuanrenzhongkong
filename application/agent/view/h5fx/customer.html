@@ -1,0 +1,150 @@
+{include file="public/header" /}
+<style>
+    .table-bordered > tbody > tr:hover {
+        background-color: #f5f5f5
+    }
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>会员列表</h5>
+                    <h5>&nbsp;{$_count}条&nbsp;余额：￥{$_balance}</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row input-groups">
+                        <div class="col-md-12 m-b-xs form-inline text-left">
+                            <div class="form-group">
+                                <a class="btn-sm btn-white open-reload"><i class="glyphicon glyphicon-repeat"></i></a>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">关注:</label>
+                                <select class="input-sm form-control input-s-sm inline serach_selects"
+                                        name="is_subscribe"
+                                        style="width: auto;">
+                                    <option value="0">请选择</option>
+                                    <option value="2"
+                                    <?php if(I('is_subscribe')==2){ echo "selected='selected'"; } ?>>是</option>
+                                    <option value="1"
+                                    <?php if(I('is_subscribe')==1){ echo "selected='selected'"; } ?>>否</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">状态:</label>
+                                <select class="input-sm form-control input-s-sm inline serach_selects" name="status"
+                                        style="width: auto;">
+                                    <option value="0">请选择</option>
+                                    <option value="2"
+                                    <?php if(I('status')==2){ echo "selected='selected'"; } ?>>启用</option>
+                                    <option value="1"
+                                    <?php if(I('status')==1){ echo "selected='selected'"; } ?>>禁用</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">查询条件:</label>
+                                <select class="input-sm form-control input-s-sm inline" name="query_name"
+                                        style="width: auto;">
+                                    <option value="">模糊</option>
+                                    <option value="c.id"
+                                    <?php if(I('query_name')=='c.id'){ echo "selected='selected'"; } ?>>ID</option>
+                                    <option value="c.username"
+                                    <?php if(I('query_name')=='c.username'){ echo "selected='selected'"; } ?>
+                                    >名称</option>
+                                    <option value="c.wx_openid"
+                                    <?php if(I('query_name')=='c.wx_openid'){ echo "selected='selected'"; } ?>
+                                    >openid</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input type="hidden" name="id" value="{:I('id')}"/>
+                                    <input type="text" name="key" placeholder="请输入昵称或者手机号" value="{:I('key')}"
+                                           class="input-sm form-control">
+                                    <span class="input-group-btn"><button type="button" id="search"
+                                                                          class="btn btn-sm btn-primary"
+                                                                          url="{:U('customer')}"> 搜索</button></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th>ID</th>
+                                <th>会员</th>
+                                <th>等级</th>
+                                <th>余额</th>
+                                <th>消费</th>
+                                <th>公众号</th>
+                                <th>注册时间</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name="_list" id="vo"}
+                            <tr>
+                                <td><img src="{$vo.headimg}" alt="" style="width: 30px;height: 30px;border-radius: 50%;"></td>
+                                <td>{$vo.id}</td>
+                                <td>
+                                    {$vo.username}
+                                </td>
+                                <td>[{:C('CUS_TYPE')[$vo.type]}]{$vo.grade_name}<br/>
+                                    {eq name="vo.type" value="2"}
+                                    h5分销：{$vo.is_h5fx==1?"是":'否'}
+                                    {/eq}
+                                </td>
+                                <td>
+                                    <a class="open-window no-refresh" title="用户账单" href="{:U('customer/balance_log',['id'=>$vo.id])}">{$vo.balance}</a>
+                                </td>
+                                <td>订单：{$vo.porder_num}<br/>
+                                    消费：<a class="open-window no-refresh" title="订单"
+                                          href="{:U('porder/index',['customer_id'=>$vo.id])}">{$vo.total_price}</a></td>
+                                <td>
+                                    openid：{$vo.wx_openid}<br/>
+                                    关注：{$vo.is_subscribe?'是':'否'}
+                                </td>
+                                <td>{$vo.create_time|time_format}</td>
+                                <td>{eq name="vo.status" value="0"}<span
+                                        class="text-danger">禁用</span>{else/}<span
+                                        class="text-info">启用</span>{/eq}
+                                </td>
+                                <td>
+                                    {eq name="vo.status" value="1"}
+                                    <a class="text-warning ajax-get"
+                                       href="{:U('qi_jin?id='.$vo.id.'&status=0')}" title="禁用">禁用</a>
+                                    {else/}
+                                    <a class="text-info ajax-get" href="{:U('qi_jin?id='.$vo.id.'&status=1')}"
+                                       title="启用">启用</a>
+                                    {/eq}
+                                </td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="page">
+                        {$_list->render()}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script>
+    $(".recharge").click(function () {
+        $("#rechargeid").val($(this).data("id"));
+        $("#rechargeModal").show();
+    });
+
+    function closerechargeModal() {
+        $("#rechargeModal").hide();
+    }
+</script>
+</html>

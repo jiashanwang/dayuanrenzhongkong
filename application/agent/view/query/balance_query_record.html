@@ -1,0 +1,112 @@
+{include file="public/header" /}
+<style>
+    .table-bordered > tbody > tr:hover {
+        background-color: #f5f5f5
+    }
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>余额查询列表</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row input-groups">
+                        <div class="col-sm-3 m-b-xs">
+                           <a class="btn btn-sm btn-white open-reload"><i class="glyphicon glyphicon-repeat"></i></a>
+                            <a class="btn btn-sm btn-primary open-window" href="{:U('balance_query_add')}" title="新增余额查询"><i
+                                    class="fa fa-plus"></i> 新增余额查询</a>
+                                    
+                        </div>
+                        <form method="post" action="{:U('balance_query_deleate')}" class="form-horizontal saveinfo">
+                        <div class="col-sm-3 m-b-xs">
+                           <input type="hidden" name="customer_id" value="{$info.id}">
+                             <button class="btn btn-primary ajax-post" type="submit" target-form="saveinfo" >清除查询记录</button>       
+                        </div>
+                        </form>
+                        <div class="col-sm-6" style="float: right;">
+                            <div class="input-group">
+
+                               <i class="text">话费查询看账户余额，户号查询看最低缴费额，户号余额查询看账户余额，可用余额，欠费余额，虚拟号转网查询看倒数二三项，余额查询费用(次)：移动 {$yd_price} 电信 {$dx_price} 联通 {$lt_price} 电费 {$df_price} 电费户号 {$dfhh_price} 号码检测 {$hmjc_price}</i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>查询类型</th>
+                                <th>查询号码</th>
+                                <th>账户余额</th>
+                                <th>最低缴费额</th>
+                                <th>可用余额</th>
+                                <th>欠费余额</th>
+                                <th>是否虚拟号</th>
+                                <th>是否携号转网</th>
+                                <th>查询时间</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name="_list" id="vo"}
+                            <tr>
+                                <td>{$vo.Query_type}</td>
+                                <td>{$vo.Query_number}</td>
+                                <td>{$vo.Account_balance}</td>
+                                <td>{$vo.Minimum_payment_amount}</td>
+                                <td>{$vo.OwedBalance}</td>
+                                <td>{$vo.AvailableBalance}</td>
+                                <td>{$vo.IsVirtuallyIsp}</td>
+                                <td>{$vo.isTransfer}</td>
+                                <td>{$vo.Create_time}</td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green'
+        });
+    });
+    $("#search,#excel").click(function () {
+        var url = $(this).attr('url');
+        var query = $('.input-groups').find('input').serialize();
+        var select = $('.input-groups').find('select').serialize();
+        query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g, '');
+        query = query.replace(/^&/g, '');
+        if (url.indexOf('?') > 0) {
+            url += '&' + query;
+        } else {
+            url += '?' + query;
+        }
+        if (url.indexOf('?') > 0) {
+            url += '&' + select;
+        } else {
+            url += '?' + select;
+        }
+        window.location.href = url;
+    });
+    //回车搜索
+    $(".input-sm").keyup(function (e) {
+        if (e.keyCode === 13) {
+            $("#search").click();
+            return false;
+        }
+    });
+    $(".serach_selects").change(function () {
+        $("#search").click();
+        return false;
+    });
+</script>
+</body>
+</html>

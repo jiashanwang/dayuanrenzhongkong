@@ -1,0 +1,92 @@
+{include file="public/header" /}
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>代理商资料</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <form method="post" class="form-horizontal" action="{:U('edit')}">
+                        <input type="hidden" name="id" value="{$info.id}">
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>商户资料<span style="margin-left: 8px;color: #aaa;"></span></label>
+                                <div>
+                                    后台地址：<a href="{:C('WEB_URL')}agent.php" target="_blank">{:C('WEB_URL')}agent.php</a><br/>
+                                    登录账号：{$info.username}<br/>
+                                    提单表格：<a href="{:C('PORDER_EXCEL_IN_DOC')}" target="_blank">{:C('PORDER_EXCEL_IN_DOC')}</a><br/><br/>
+                                </div>
+                                <label>api资料<span style="margin-left: 8px;color: #aaa;"></span></label>
+                                <div>
+                                    接口地址：{:C('WEB_URL')}yrapi.php/<br/>
+                                    商户ID：{$info.id}<br/>
+                                    ApiKey：{$info.apikey}&nbsp;<a class="text-warning ajax-get confirm"
+                                                            href="{:U('reset_apikey?id='.$info.id)}"
+                                                            title="重置秘钥">重置秘钥</a><br/>
+                                    接口文档：<a href="{:C('API_DOC_URL')}" target="_blank">{:C('API_DOC_URL')}</a><br/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>打开代理端分销<span style="margin-left: 8px;color: #aaa;">打开分销以后代理端给下面代理添加账号</span></label>
+                                <select class="form-control m-b" name="is_agfx">
+                                    <option value="0" <?php if($info && $info['is_agfx']==0){ echo "selected='selected'"; } ?> >关闭</option>
+                                    <option value="1" <?php if($info && $info['is_agfx']==1){ echo "selected='selected'"; } ?> >打开</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>打开API提单<span style="margin-left: 8px;color: #aaa;">打开api提单的账号可以通过接口传单</span></label>
+                                <select class="form-control m-b" name="is_openapi">
+                                    <option value="0" <?php if($info && $info['is_openapi']==0){ echo "selected='selected'"; } ?> >关闭</option>
+                                    <option value="1" <?php if($info && $info['is_openapi']==1){ echo "selected='selected'"; } ?> >打开</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>打开H5分销<span style="margin-left: 8px;color: #aaa;">打开分销以后代理可以用自己的公众号给客户进行分销</span></label>
+                                <select class="form-control m-b" name="is_h5fx">
+                                    <option value="0" <?php if($info && $info['is_h5fx']==0){ echo "selected='selected'"; } ?> >关闭</option>
+                                    <option value="1" <?php if($info && $info['is_h5fx']==1){ echo "selected='selected'"; } ?> >打开</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>IP白名单<span
+                                        style="margin-left: 8px;color: #aaa;">多个ip用,号隔开；未设置代表不限制</span></label>
+                                <textarea class="form-control" name="ip_white_list">{$info.ip_white_list}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <button type="submit" class="btn btn-primary ajax-post" target-form="form-horizontal">
+                                    确定
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

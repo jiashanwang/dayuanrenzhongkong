@@ -1,0 +1,116 @@
+{include file="public/header" /}
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>清除指定时间以前的订单数据（谨慎操作，不可恢复）（清除前务必先进行数据备份）</h5>
+                    <div class="ibox-tools">
+
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <form method="post" class="form-horizontal" action="{:U('doclear')}">
+                        <input type="hidden" name="id" value="{$info.id|default=''}">
+                        <div class="form-group">
+                            <div class="col-sm-12" style="color: #f00">
+                                1、清除的数据包括：订单、订单日志、订单api日志、导入表格、投诉记录；不会影响会员，余额，接口，套餐等信息，请放心清理！<br/>
+                                2、谨慎操作，不可恢复，清除前务必先进行数据备份(宝塔面板->数据库->备份；不会操作的联系技术处理；)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>指定时间点以前的数据<span style="margin-left: 8px;color: #aaa;"></span></label>
+                                <input type="text" name="time" id="time"
+                                       class="form-control" autocomplete="off" placeholder="时间点"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>谷歌身份验证码<span style="margin-left: 8px;color: #aab;"></span></label>
+                                <input type="text" class="form-control" name="verifycode" autocomplete="off" placeholder="输入谷歌身份验证码" maxlength="6">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <button type="submit" class="btn btn-primary ajax-post" target-form="form-horizontal">
+                                    <i class="fa fa-recycle"></i>  立即清除
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>清除指定时间以前的日志记录（谨慎操作，不可恢复）（清除前务必先进行数据备份）</h5>
+                    <div class="ibox-tools">
+
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <form method="post" class="form-horizontal #{controller.action_name}" action="{:U('doclears')}">
+                        <input type="hidden" name="id" value="{$info.id|default=''}">
+                        <div class="form-group">
+                            <div class="col-sm-12" style="color: #f00">
+                                1、清除的数据包括：会员操作日志、会员余额日志(只会清理加款扣款记录，不会清理余额)、会员登录日志、公众号、H5端支付日志、管理员登录日志、管理员后台操作日志;请谨慎清理！<br/>
+                                2、谨慎操作，不可恢复，清除前务必先进行数据备份(宝塔面板->数据库->备份；不会操作的联系技术处理；)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>指定时间点以前的数据<span style="margin-left: 8px;color: #aaa;"></span></label>
+                                <input type="text" name="times" id="times"
+                                       class="form-control" autocomplete="off" placeholder="时间点"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>谷歌身份验证码<span style="margin-left: 8px;color: #aaa;"></span></label>
+                                <input type="text" class="form-control" name="verifycodes" autocomplete="off" placeholder="输入谷歌身份验证码" maxlength="6">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <button type="submit" class="btn btn-primary ajax-post" target-form="form-horizontal #{controller.action_name}">
+                                    <i class="fa fa-recycle"></i>  立即清除
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="__JS__/laydate/laydate.js"></script>
+<script>
+    //执行一个laydate实例
+    laydate.render({
+        elem: '#time',
+        type: 'datetime',
+        done: function (value, date, endDate) {
+            $('#time').val(value);
+        }
+    });
+        //执行一个laydate实例
+    laydate.render({
+        elem: '#times',
+        type: 'datetime',
+        done: function (value, date, endDate) {
+            $('#times').val(value);
+        }
+    });
+</script>
+</body>
+
+</html>

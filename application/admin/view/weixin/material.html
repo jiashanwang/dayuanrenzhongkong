@@ -1,0 +1,151 @@
+{include file="public/header" /}
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>素材</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            {volist name="types" id="vo"}
+                            <li class="{$type==$vo['type']?'active':''} typetab" data-typeid="{$vo.type}">
+                                <a data-toggle="tab" href="#tab-{$vo.type}" aria-expanded="false">{$vo.name}</a>
+                            </li>
+                            {/volist}
+                        </ul>
+                    </div>
+                    <div class="row input-groups" style="margin-top: 10px;">
+                        <div class="col-md-12 m-b-xs form-inline text-right">
+                            <div class="form-group">
+                                <div class="input-group" style="display: none;">
+                                    <input type="hidden" name="type" value="{:I('type')}"/>
+                                    <span class="input-group-btn"><button type="button" id="search"
+                                                                          class="btn btn-sm btn-primary"
+                                                                          url="{:U('material')}"> 搜索</button></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive tooltip-demo">
+                        <table class="table table-striped">
+
+                            {switch name="type"}
+                            {case value="image"}
+                            <thead>
+                            <tr>
+                                <th>素材ID</th>
+                                <th>标题</th>
+                                <th>图片</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name="list" id="vo" key="key"}
+                            <tr>
+                                <td>{$vo.media_id}</td>
+                                <td>{$vo.name}</td>
+                                <td>
+                                    <a target="_blank" href="{$vo.url}"> <img style="width: 30px;height: 30px;"
+                                                                              src="{$vo.url}"/></a>
+                                </td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                            {/case}
+                            {case value="video"}
+                            <thead>
+                            <tr>
+                                <th>素材ID</th>
+                                <th>标题</th>
+                                <th>描述</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name="list" id="vo" key="key"}
+                            <tr>
+                                <td>{$vo.media_id}</td>
+                                <td>{$vo.name}</td>
+                                <td>{$vo.description}</td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                            {/case}
+                            {case value="voice"}
+                            <thead>
+                            <tr>
+                                <th>素材ID</th>
+                                <th>标题</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name="list" id="vo" key="key"}
+                            <tr>
+                                <td>{$vo.media_id}</td>
+                                <td>{$vo.name}</td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                            {/case}
+                            {case value="news"}
+                            <thead>
+                            <tr>
+                                <th>素材ID</th>
+                                <th>标题</th>
+                                <th>作者</th>
+                                <th>内容</th>
+                                <th>缩略图</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name="list" id="vo" key="key"}
+                            <tr>
+                                <td>{$vo.media_id}</td>
+                                <td colspan="4"></td>
+                            </tr>
+                            {volist name="vo.content.news_item" id="va"}
+                            <tr>
+                                <td></td>
+                                <td>
+                                    {$va.title}
+                                </td>
+                                <td>
+                                    {$va.author}
+                                </td>
+                                <td>
+                                    {$va.content}
+                                </td>
+                                <td>
+                                    <a target="_blank" href="{$va.url}"> <img style="width: 30px;height: 30px;"
+                                                                              src="{$va.thumb_url}"/></a>
+                                </td>
+                            </tr>
+                            {/volist}
+                            {/volist}
+                            </tbody>
+                            {/case}
+                            {/switch}
+
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+</body>
+<script>
+    $(".typetab").click(function () {
+        var type_id = $(this).data('typeid');
+        $("[name=type]").val(type_id);
+        $("#search").trigger("click");
+    });
+</script>
+</html>

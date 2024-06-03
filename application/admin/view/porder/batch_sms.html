@@ -1,0 +1,84 @@
+{include file="public/header" /}
+<style>
+    .yixuanapi {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .yixuanapi .item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .yixuanapi .item .delbtn {
+        width: 20px;
+        height: 20px;
+        text-align: center;
+        line-height: 20px;
+        background-color: #f00;
+        color: #fff;
+        border-radius: 10px;
+        font-size: 20px;
+        margin-right: 10px;
+    }
+
+    .yixuanapi .item span {
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .mianspan {
+        color: #fff;
+        background-color: #0d8ddb;
+        padding-left: 10px;
+        padding-right: 10px;
+        border-radius: 10px;
+        line-height: 30px;
+        height: 30px;
+    }
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>提交充值</h5>
+                    <div class="ibox-tools">
+
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <form method="post" class="form-horizontal" action="{:U('batch_sms_do')}">
+                        <div class="form-group ">
+                            <div class="col-sm-12">
+                                当前筛选结果订单<span class="text-danger" style="font-size: 20px">{$_total}</span>条，在下方填入短信内容。
+                                <input type="hidden" value="{$_ids}" name="ids"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>短信内容&nbsp;<span class="text-danger">请编写下方的短信内容</span></label>
+                                <textarea type="text" class="form-control" name="template">{:C('SUS_TMP_PORDER')}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: 20px">
+                            <div class="col-sm-12">
+                                <button type="submit" class="btn btn-primary ajax-post" target-form="form-horizontal">
+                                    立马提交
+                                </button>
+                                <a type="button" class="btn btn-white" href="javascript:history.go(-1);">返回</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,140 @@
+{include file="public/header" /}
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>公众号资料编辑</h5>
+                </div>
+                <div class="ibox-content">
+                    <form method="post" class="form-horizontal" action="{:U('editw')}">
+                        <input type="hidden" name="id" value="{$info?$info['id']:''}"/>
+                        <input type="hidden" name="type" value="{$info?$info['type']:I('type')}"/>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>名称<span style="margin-left: 8px;color: #aaa;">H5页面中显示的标题</span></label>
+                                <input type="text" class="form-control" name="name" value="{$info?$info.name:''}"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        {empty name="info"}
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>开发者ID（appid）<span style="margin-left: 8px;color: #aaa;">务必填写正确，添加后不可修改</span></label>
+                                <input type="text" class="form-control" name="appid" value="{$info?$info.appid:''}"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        {else/}
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>开发者ID（appid）<span style="margin-left: 8px;color: #aaa;">不可修改</span></label>
+                                <input type="text" class="form-control" name="appid" value="{$info?$info.appid:''}"
+                                       autocomplete="off" readonly>
+                            </div>
+                        </div>
+                        {/empty}
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>开发者密码（appsecret）</label>
+                                <input type="text" class="form-control" name="appsecret"
+                                       value="{$info?$info.appsecret:''}"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>用户手机号绑定<span style="margin-left: 8px;color: #aaa;"></span></label>
+                                <select class="form-control m-b" name="is_bind_mobile">
+                                    <option value="0" <?php if($info && $info['is_bind_mobile']==0){ echo "selected='selected'"; } ?>>不绑定</option>
+                                    <option value="1" <?php if($info && $info['is_bind_mobile']==1){ echo "selected='selected'"; } ?>>提示绑定</option>
+                                    <option value="2" <?php if($info && $info['is_bind_mobile']==2){ echo "selected='selected'"; } ?>>必须绑定</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <label>话费查询<span style="margin-left: 8px;color: #aaa;"></span></label>
+                                <select class="form-control m-b" name="is_phone_bla">
+                                    <option value="0" <?php if($info && $info['is_phone_bla']==0){ echo "selected='selected'"; } ?>>关闭</option>
+                                    <option value="1" <?php if($info && $info['is_phone_bla']==1){ echo "selected='selected'"; } ?>>打开</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <label>电费查询<span style="margin-left: 8px;color: #aaa;"></span></label>
+                                <select class="form-control m-b" name="is_ele_bla">
+                                    <option value="0" <?php if($info && $info['is_ele_bla']==0){ echo "selected='selected'"; } ?>>关闭</option>
+                                    <option value="1" <?php if($info && $info['is_ele_bla']==1){ echo "selected='selected'"; } ?>>打开</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <button type="submit" class="btn btn-primary ajax-post" target-form="form-horizontal">确定
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="file" name="file" id="fileid" onchange="fileUpload()" style="display: none"/>
+</body>
+<script type="text/javascript" charset="utf-8" src="__JS__/ueditor/ueditor.config.js?v=1"></script>
+<script type="text/javascript" charset="utf-8" src="__JS__/ueditor/ueditor.all.min.js?v=1222"></script>
+<script type="text/javascript" charset="utf-8" src="__JS__/ueditor/lang/zh-cn/zh-cn.js"></script>
+<script src="__JS__/ajaxfileupload.js" type="text/javascript"></script>
+<script>
+    var gid;
+    var upurl = "";
+
+    function choose_file(obj) {
+        gid = obj.data("gid");
+        var url = obj.attr("url");
+        upurl = url ? url : "{:U('File/upload')}";
+        $("#fileid").trigger("click");
+    }
+
+    function fileUpload() {
+        var index = layer.load(1, {
+            shade: [0.1, '#fff'] //0.1透明度的白色背景
+        });
+        //上传图片
+        $.ajaxFileUpload({
+            url: upurl, //文件上传到哪个地址，告诉ajaxFileUpload
+            secureuri: false, //一般设置为false
+            fileElementId: 'fileid', //文件上传控件的Id  <input type="file" id="fileUpload" name="file" />
+            dataType: 'json', //返回值类型 一般设置为json
+            success: function (ret, status)  //服务器成功响应处理函数
+            {
+                layer.closeAll();
+                console.log(ret);
+                if (ret.errno == 0) {
+                    if ($("#" + gid).data('type') == 'img') {
+                        $("#" + gid + "img").attr('src', "{:C('WEB_URL')}" + ret.data);
+                        $("#" + gid + "img").data('url', "{:C('WEB_URL')}" + ret.data);
+                        $("#" + gid).val("{:C('WEB_URL')}" + ret.data);
+                    } else {
+                        $("#" + gid).val(ret.data);
+                    }
+                    toastr.success(ret.errmsg);
+                } else {
+                    toastr.error(ret.errmsg);
+                }
+            }
+        })
+    }
+
+    $(".oldconfig").click(function () {
+        var value = $(this).data('value');
+        var domname = $(this).data('name');
+        $("[name=" + domname + "]").val(value);
+    });
+
+</script>
+</html>

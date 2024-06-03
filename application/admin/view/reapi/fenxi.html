@@ -1,0 +1,119 @@
+{include file="public/header" /}
+<style>
+    .table-bordered > tbody > tr:hover {
+        background-color: #f5f5f5
+    }
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>供应商订单数据分析</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row input-groups" style="margin-bottom: 10px">
+                        <div class="col-md-2 form-inline text-left">
+                            <div class="form-group">
+                                <a class="btn btn-sm btn-white open-reload"><i
+                                        class="glyphicon glyphicon-repeat"></i></a>
+                            </div>
+                        </div>
+                        <div class="col-md-10 m-b-xs form-inline text-right">
+                            <div class="form-group">
+                                <label class="control-label">接口:</label>
+                                <select class="input-sm form-control input-s-sm inline serach_selects"
+                                        name="reapi_id"
+                                        style="width: auto;">
+                                    <option value="">请选择</option>
+                                    {volist name="apis" id="vo"}
+                                    <option value="{$vo['id']}"
+                                    <?php if(I('reapi_id')==$vo['id']){ echo "selected='selected'"; } ?>
+                                    >{$vo.name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <span class="control-label">时间：</span>
+                                <input type="text" name="begin_time" id="begin_time" value="{:I('begin_time')}"
+                                       class="input-sm input-s-sm serach_selects" style="border: 1px solid #e5e6e7;"
+                                       placeholder="开始日期" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <span class="control-label">-</span>
+                                <input type="text" name="end_time" id="end_time" value="{:I('end_time')}"
+                                       style="border: 1px solid #e5e6e7;"
+                                       class="input-sm input-s-sm serach_selects" placeholder="结束日期"
+                                       autocomplete="off">
+                            </div>
+
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input type="hidden" value="{:I('reapi_id')}" name="reapi_id"/>
+                                    <span class="input-group-btn"><button type="button" id="search"
+                                                                          class="btn btn-sm btn-primary"
+                                                                          url="{:U('fenxi')}"> 搜索</button></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>接口</th>
+                                <th>统计时段</th>
+                                <th>提交api次数（一单可能多次）</th>
+                                <th>充值中订单</th>
+                                <th>成功订单(含部分充值)</th>
+                                <th>失败订单</th>
+                                <th>成功金额</th>
+                                <th>成本</th>
+                                <th>利润</th>
+                                <th>成功率</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name="data" id="vo"}
+                            <tr>
+                                <td>{$vo.name}</td>
+                                <td>{$vo.date_start}-{$vo.date_end}</td>
+                                <td>{$vo.all_count}</td>
+                                <td>{$vo.ing_count}</td>
+                                <td>{$vo.sus_count}</td>
+                                <td>{$vo.all_count-$vo.ing_count-$vo.sus_count}</td>
+                                <td>{$vo.sus_price+$vo.pasus_price}</td>
+                                <td>{$vo.sus_cost+$vo.pasus_cost}</td>
+                                <td>{$vo.sus_price+$vo.pasus_price-$vo.sus_cost-$vo.pasus_cost}</td>
+                                <td>{$vo.sus_ratio}%</td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__JS__/laydate/laydate.js"></script>
+<script>
+    //执行一个laydate实例
+    laydate.render({
+        elem: '#begin_time',
+        type: 'date',
+        done: function (value, date, endDate) {
+            $('#begin_time').val(value);
+        }
+    });
+    laydate.render({
+        elem: '#end_time',
+        type: 'date',
+        done: function (value, date, endDate) {
+            $('#end_time').val(value);
+        }
+    });
+</script>
+</body>
+</html>

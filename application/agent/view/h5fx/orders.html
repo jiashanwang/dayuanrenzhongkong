@@ -1,0 +1,273 @@
+{include file="public/header" /}
+<style>
+    .table-bordered > tbody > tr:hover {
+        background-color: #f5f5f5
+    }
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>
+                        <span title="当前筛选订单结果总单数">订单列表（结果{$_total}条）</span>&nbsp;&nbsp;
+                        <span title="当前筛选订单结果总支付金额，不限制订单状态">结果总金额：￥{$total_price}</span>&nbsp;&nbsp;
+                        <span title="成功订单的支付总金额">成功总金额：￥{$sus_total_price}</span>&nbsp;
+                        <span title="成功订单的成本">成功总成本：￥{$sus_cost_price}</span>&nbsp;
+                        <span title="成功订单的利润">成功总利润：￥{$sus_total_price-$sus_cost_price}</span>&nbsp;
+                        <span title="当前筛选订单退款总金额">退款总金额：￥{$_refund_price}</span>&nbsp;
+                    </h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="row input-groups">
+                        <div class="col-md-12 m-b-xs form-inline text-left">
+                            <div class="form-group">
+                                <a class="btn btn-sm btn-white open-reload"><i
+                                        class="glyphicon glyphicon-repeat"></i></a>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">时间:</label>
+                                <select class="input-sm form-control input-s-sm inline" name="time_style"
+                                        style="width: auto;">
+                                    <option value="create_time"
+                                    <?php if(I('time_style')=='create_time'){ echo "selected='selected'"; } ?>
+                                    >下单时间</option>
+                                    <option value="apifail_time"
+                                    <?php if(I('time_style')=='apifail_time'){ echo "selected='selected'"; } ?>
+                                    >失败时间</option>
+                                    <option value="refund_time"
+                                    <?php if(I('time_style')=='refund_time'){ echo "selected='selected'"; } ?>
+                                    >退款时间</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <span class="control-label">日期:</span>
+                                <input type="text" name="begin_time" id="begin_time" value="{:I('begin_time')}"
+                                       class="input-sm input-s-sm form-control" autocomplete="off" placeholder="开始时间"/>
+                                <span class="control-label">-</span>
+                                <input type="text" name="end_time" id="end_time" value="{:I('end_time')}"
+                                       class="input-sm input-s-sm form-control" autocomplete="off" placeholder="结束时间"/>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">类型:</label>
+                                <select class="input-sm form-control input-s-sm inline serach_selects" name="type"
+                                        style="width: auto;">
+                                    <option value="0">请选择</option>
+                                    {volist name="_types" id="vo"}
+                                    <option value="{$vo.id}"
+                                    <?php if(I('type')==$vo['id']){ echo "selected='selected'"; } ?>
+                                    >{$vo.type_name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <?php $isps=C('ISP_TEXT');?>
+                                <label class="control-label">运营商:</label>
+                                <select class="input-sm form-control input-s-sm inline serach_selects" name="isp"
+                                        style="width: auto;">
+                                    <option value="0">请选择</option>
+                                    {volist name="isps" id="vo"}
+                                    <option value="{$key}"
+                                    <?php if(I('isp')==$key){ echo "selected='selected'"; } ?>>{$vo}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <?php $statusarr=C('PORDER_STATUS');?>
+                                <label class="control-label">状态:</label>
+                                <select class="input-sm form-control input-s-sm inline serach_selects" name="status"
+                                        style="width: auto;">
+                                    <option value="0">请选择</option>
+                                    {volist name="statusarr" id="vo"}
+                                    <option value="{$key}"
+                                    <?php if(I('status')==$key){ echo "selected='selected'"; } ?>>{$vo}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label">排序:</label>
+                                <select class="input-sm form-control input-s-sm inline serach_selects" name="sort"
+                                        style="width: auto;">
+                                    <option value="">默认</option>
+                                    <option value="create_time desc"
+                                    <?php if(I('sort')=='create_time desc'){ echo "selected='selected'"; } ?>
+                                    >下单时间</option>
+                                    <option value="finish_time desc"
+                                    <?php if(I('sort')=='finish_time desc'){ echo "selected='selected'"; } ?>
+                                    >完成时间</option>
+                                    <option value="refund_time desc"
+                                    <?php if(I('sort')=='refund_time desc'){ echo "selected='selected'"; } ?>
+                                    >退款时间</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">批量手机:</label>
+                                <textarea name="batch_mobile" class="form-control"
+                                          placeholder="批量手机查询，多个回车分割">{:I('batch_mobile')}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">查询条件:</label>
+                                <select class="input-sm form-control input-s-sm inline" name="query_name"
+                                        style="width: auto;">
+                                    <option value="">模糊</option>
+                                    <option value="customer_id"
+                                    <?php if(I('query_name')=='customer_id'){ echo "selected='selected'"; } ?>
+                                    >用户ID</option>
+                                    <option value="order_number"
+                                    <?php if(I('query_name')=='order_number'){ echo "selected='selected'"; } ?>
+                                    >订单号</option>
+                                    <option value="mobile"
+                                    <?php if(I('query_name')=='mobile'){ echo "selected='selected'"; } ?>>手机号</option>
+                                    <option value="isp"
+                                    <?php if(I('query_name')=='isp'){ echo "selected='selected'"; } ?>
+                                    >运营商/地区</option>
+                                    <option value="guishu"
+                                    <?php if(I('query_name')=='guishu'){ echo "selected='selected'"; } ?>
+                                    >归属地</option>
+                                    <option value="customer.wx_openid.customer_id"
+                                    <?php if(I('query_name')=='customer.wx_openid.customer_id'){ echo "selected='selected'"; } ?>
+                                    >openid</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input type="hidden" name="customer_id" value="{:I('customer_id')}">
+                                    <input type="hidden" name="apart_order_number" value="{:I('apart_order_number')}">
+                                    <input type="text" name="key" placeholder="请输入套餐/单号/手机号/归属地/备注" value="{:I('key')}"
+                                           class="input-sm form-control">
+                                    <span class="input-group-btn"><button type="button" id="search"
+                                                                          class="btn btn-sm btn-primary"
+                                                                          url="{:U('orders')}"> 搜索</button></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>单号</th>
+                                <th>客户</th>
+                                <th>类型</th>
+                                <th>套餐</th>
+                                <th>充值账号</th>
+                                <td>状态</td>
+                                <th>时间</th>
+                                <th>金额</th>
+                                <th>成本</th>
+                                <th>备注</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name="_list" id="vo"}
+                            <tr>
+                                <td style="font-size: 12px;">
+                                    <span class="js-copy"
+                                          data-clipboard-text="{$vo.order_number}">{$vo.order_number}</span>
+                                </td>
+                                <td>
+                                    <div style="max-width: 100px;overflow-x: scroll;font-size: 12px;white-space:nowrap;">
+                                        [<a class="text-success open-window no-refresh"
+                                            href="{:U('customer',['id'=>$vo['customer_id']])}">ID:{$vo.customer_id}</a>]&nbsp;{$vo.username}
+                                    </div>
+                                </td>
+                                <td>{$vo.type_name}</td>
+                                <td>[<a class="text-success open-window no-refresh"
+                                        href="{:U('product/index',['id'=>$vo['product_id'],'type'=>$vo['type']])}">ID:{$vo.product_id}</a>]&nbsp;{$vo.product_name}
+                                </td>
+                                <td class="js-copy" data-clipboard-text="{$vo.mobile}">
+                                    {$vo.mobile}<br/>
+                                    {$vo.guishu}{$vo.isp}{$vo.param3}<br/>
+                                    <span title="{$vo.param2?C('ELE_YTYPE')[$vo.param2]:''}">{$vo.param1}</span>
+                                </td>
+                                <td>
+                                    <span class="label label-{$vo.status_text_color}">{:C('ORDER_STUTAS')[$vo.status]}</span>
+                                </td>
+                                <td>
+                                    <div style="max-height: 100px;overflow-y: scroll;font-size: 12px;">
+                                        下单：{$vo.create_time}<br/>
+                                        支付：{$vo.pay_time|time_format}<br/>
+                                        完成：{$vo.finish_time|time_format}<br/>
+                                        退款：[￥{$vo.refund_price}]&nbsp;{$vo.refund_time|time_format}
+                                    </div>
+                                </td>
+                                <td>{$vo.total_price}</td>
+                                <td>{$vo.h5fxpay_price}</td>
+                                <td>{:C('IS_SHOW_CLIENT_REMARK')==1?$vo.remark:''}</td>
+                                <td>
+                                    {eq name="agent_cancel_sw" value="1"}
+                                    {eq name="vo.apply_refund" value="0"}
+                                    {in name='vo.status' value='2,3,10'}
+                                    <a class="text-danger ajax-get confirm" href="{:U('apply_cancel_order?id='.$vo.id)}"
+                                       title="申请退单">申请退单</a>
+                                    {/in}
+                                    {/eq}
+                                    {/eq}
+                                </td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="page">
+                        {$_list->render()}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="__JS__/laydate/laydate.js"></script>
+<script>
+    //执行一个laydate实例
+    laydate.render({
+        elem: '#begin_time',
+        type: 'datetime',
+        done: function (value, date, endDate) {
+            $('#begin_time').val(value);
+        }
+    });
+    laydate.render({
+        elem: '#end_time',
+        type: 'datetime',
+        done: function (value, date, endDate) {
+            $('#end_time').val(value);
+        }
+    });
+    $(".tiptext").click(function () {
+        var text = $(this).data('text');
+        layer.alert(text, {
+            skin: 'layui-layer-molv' //样式类名
+            , closeBtn: 0
+        }, function () {
+            layer.closeAll();
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green'
+        });
+    });
+</script>
+<script>
+    var btn = document.getElementsByClassName("js-copy");
+    var clipboard = new Clipboard(btn);//实例化
+    //复制成功执行的回调，可选
+    clipboard.on('success', function (e) {
+        layer.msg('复制成功！');
+    });
+
+    //复制失败执行的回调，可选
+    clipboard.on('error', function (e) {
+        layer.msg('复制失败！');
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+{include file="public/header" /}
+<body class="gray-bg">
+<div class="wrapper wrapper-content" id="page">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>{:I('id')?'编辑':'新增'}产品类型</h5>
+                    <div class="ibox-tools">
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <form role="form" action="{:U()}" method="post" class="menu_form  form-horizontal">
+                        <input name="id" value="{$info.id|default=''}" type="hidden"/>
+                        <input name="typec_id" value="{$info?$info['typec_id']:I('typec_id')}" type="hidden"/>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>选择字段<span style="margin-left: 8px;color: #aaa;"></span></label><br/>
+                                <select class="form-control m-b" name="zi_duan">
+                                    <option value="0">请选择</option>
+                                    {volist name="_zds" id="to"}
+                                    <option value="{$to}"
+                                    <?php if($info && $info['zi_duan']==$to){ echo "selected='selected'"; } ?>
+                                    >{$to}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>输入提示</label>
+                                <input type="text" placeholder="请输入输入提示" class="form-control" name="pla_ziduan"
+                                       value="{$info.pla_ziduan|default=''}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>排序</label>
+                                <input type="text" placeholder="账号输入提示" class="form-control" name="sort"
+                                       value="{$info.sort|default=''}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>输入类型<span style="margin-left: 8px;color: #aaa;"></span></label>
+                                <select class="form-control m-b" name="input_type">
+                                    <option value="1"
+                                    <?php if($info && $info['input_type']==1){ echo "selected='selected'"; } ?>
+                                    >单行文字</option>
+                                    <option value="2"
+                                    <?php if($info && $info['input_type']==2){ echo "selected='selected'"; } ?>
+                                    >数字</option>
+                                    <option value="3"
+                                    <?php if($info && $info['input_type']==3){ echo "selected='selected'"; } ?>
+                                    >多行文字</option>
+                                    <option value="4"
+                                    <?php if($info && $info['input_type']==4){ echo "selected='selected'"; } ?>
+                                    >下拉选择</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>下拉选择配置<span style="margin-left: 8px;color: #aaa;">一行一个选项，值:名(类型为下拉选择时有效)</span></label>
+                                <textarea class="form-control" name="select_items" style="min-height: 100px;"
+                                          placeholder="xxx1公司:xxx1公司
+xxx2公司:xxx2公司">{$info.select_items}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <button class="btn btns btn-sm btn-primary pull-left ajax-post" type="submit"
+                                        target-form="menu_form"><strong>确 定</strong></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.changeIMG = function (name, res) {
+        $("#" + name).attr("src", res);
+        $("[name=" + name + "]").val(res);
+    }
+</script>
+</body>
+</html>
+

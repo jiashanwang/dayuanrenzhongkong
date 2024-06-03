@@ -1,0 +1,53 @@
+{include file="public/header" /}
+<style>
+    .table-bordered > tbody > tr:hover {
+        background-color: #f5f5f5
+    }
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>客户端链接</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>名称</th>
+                                <th>地址(点地址复制)</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name='list' id='vo'}
+                            <tr>
+                                <td>{$vo.name}</td>
+                                <td class="td js-copy" data-clipboard-text="{$vo.url}">{$vo.url}</td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var btn = document.getElementsByClassName("js-copy");
+    var clipboard = new Clipboard(btn);//实例化
+    //复制成功执行的回调，可选
+    clipboard.on('success', function (e) {
+        layer.msg('复制成功！');
+    });
+
+    //复制失败执行的回调，可选
+    clipboard.on('error', function (e) {
+        layer.msg('复制失败！');
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+{include file="public/header" /}
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>接口编辑</h5>
+                    <div class="ibox-tools">
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <form method="post" class="form-horizontal" action="{:U('edit')}">
+                        <input type="hidden" name="id" value="{$info.id}">
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <label>配置说明<span style="margin-left: 8px;color: #aaa;">非开发人员勿修改此栏目</span></label>
+                                <textarea class="form-control" style="min-height: 100px"
+                                          name="remark">{$info.remark|default='配置1：商户ID，配置2：秘钥，配置3：回调地址；配置4：接口地址'}</textarea>
+                            </div>
+                            <div class="col-sm-6">
+                                <label>套餐参数说明<span style="margin-left: 8px;color: #aaa;">非开发人员勿修改此栏目</span></label>
+                                <textarea class="form-control" style="min-height: 100px" name="api_remark">{$info.api_remark|default='参数1：产品ID；参数2：面值(非必填)；参数3：价格(非必填)'}</textarea>
+                            </div>
+                        </div>
+                        <?php if(I('platform')==1||($info['callapi']!="Yuanren"&&$info['callapi']!='')){ ?>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>调用类名<span style="margin-left: 8px;color: #aaa;">非开发人员勿修改此栏目</span></label>
+                                <input type="text" class="form-control" name="callapi" value="{$info.callapi}">
+                            </div>
+                        </div>
+                        <?php } ?>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>平台名称<span style="margin-left: 8px;color: #aaa;">一般是用渠道的名字，便于自己区分</span></label>
+                                <input type="text" class="form-control" name="name" value="{$info.name}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>配置1<span style="margin-left: 8px;color: #aaa;">根据配置说明填写</span></label>
+                                <input type="text" class="form-control" name="param1" value="{$info.param1}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>配置2<span style="margin-left: 8px;color: #aaa;">根据配置说明填写</span></label>
+                                <input type="text" class="form-control" name="param2" value="{$info.param2}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>配置3<span style="margin-left: 8px;color: #aaa;">根据配置说明填写</span></label>
+                                <input type="text" class="form-control" name="param3" value="{$info.param3}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>配置4<span style="margin-left: 8px;color: #aaa;">根据配置说明填写</span></label>
+                                <input type="text" class="form-control" name="param4" value="{$info.param4}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>配置5<span style="margin-left: 8px;color: #aaa;">根据配置说明填写</span></label>
+                                <input type="text" class="form-control" name="param5" value="{$info.param5}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-4">
+                                <label>排序<span style="margin-left: 8px;color: #aaa;">值越小越靠前</span></label>
+                                <input type="text" class="form-control" name="sort" value="{$info.sort}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-4">
+                                <label>天<span style="margin-left: 8px;color: #aaa;">每N天限制单个号码，填0代表不限制</span></label>
+                                <input type="text" class="form-control" name="mb_limit_day"
+                                       value="{$info.mb_limit_day}">
+                            </div>
+                            <div class="col-sm-4">
+                                <label>条数<span style="margin-left: 8px;color: #aaa;">限制单个号码进单，填0代表不限制</span></label>
+                                <input type="text" class="form-control" name="mb_limit_count"
+                                       value="{$info.mb_limit_count}">
+                            </div>
+                            <div class="col-sm-4">
+                                <label>金额<span style="margin-left: 8px;color: #aaa;">限制单个号码进单，填0代表不限制</span></label>
+                                <input type="text" class="form-control" name="mb_limit_price"
+                                       value="{$info.mb_limit_price}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-4">
+                                <label>天<span style="margin-left: 8px;color: #aaa;">每N天限制所有，填0代表不限制</span></label>
+                                <input type="text" class="form-control" name="mb_alllimit_day"
+                                       value="{$info.mb_alllimit_day}">
+                            </div>
+                            <div class="col-sm-4">
+                                <label>条数<span style="margin-left: 8px;color: #aaa;">限制所有进单，填0代表不限制</span></label>
+                                <input type="text" class="form-control" name="mb_alllimit_count"
+                                       value="{$info.mb_alllimit_count}">
+                            </div>
+                            <div class="col-sm-4">
+                                <label>金额<span style="margin-left: 8px;color: #aaa;">限制所有进单，填0代表不限制</span></label>
+                                <input type="text" class="form-control" name="mb_alllimit_price"
+                                       value="{$info.mb_alllimit_price}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-4">
+                                <label>转网退回<span style="margin-left: 8px;color: #aaa;">先去网站设置-转网功能-调至api拦截</span></label>
+                                <select class="form-control m-b" name="is_zwback">
+                                    <option value="1"
+                                    <?php if($info['is_zwback']==1){ echo "selected='selected'"; } ?>>打开</option>
+                                    <option value="0"
+                                    <?php if($info['is_zwback']==0){ echo "selected='selected'"; } ?>>关闭</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <label>空号退回<span style="margin-left: 8px;color: #aaa;">先去网站设置-空号退款-调至api拦截</span></label>
+                                <select class="form-control m-b" name="is_khback">
+                                    <option value="1"
+                                    <?php if($info['is_khback']==1){ echo "selected='selected'"; } ?>>打开</option>
+                                    <option value="0"
+                                    <?php if($info['is_khback']==0){ echo "selected='selected'"; } ?>>关闭</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <label>订单定时查询<span style="margin-left: 8px;color: #aaa;">需要配合接口使用,如接口无实时查单或者无实时显示已充值的请不要打开</span></label>
+                                <select class="form-control m-b" name="is_self_check">
+                                    <option value="1"
+                                    <?php if($info['is_self_check']==1){ echo "selected='selected'"; } ?>>打开</option>
+                                    <option value="0"
+                                    <?php if($info['is_self_check']==0){ echo "selected='selected'"; } ?>>关闭</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <label>订单定时撤单<span style="margin-left: 8px;color: #aaa;">需要配合接口使用,如对接接口无撤单api接口请不要打开</span></label>
+                                <select class="form-control m-b" name="is_self_remove">
+                                    <option value="1"
+                                    <?php if($info['is_self_remove']==1){ echo "selected='selected'"; } ?>>打开</option>
+                                    <option value="0"
+                                    <?php if($info['is_self_remove']==0){ echo "selected='selected'"; } ?>>关闭</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <button type="submit" class="btn btn-primary ajax-post" target-form="form-horizontal">
+                                    确定
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>

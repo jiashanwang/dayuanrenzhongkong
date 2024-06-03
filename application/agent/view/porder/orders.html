@@ -1,0 +1,444 @@
+{include file="public/header" /}
+<style>
+    .m-box {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        font-size: 40px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .m-box .mobile {
+        height: 80px;
+        width: 100%;
+        font-size: 28px;
+        line-height: 80px;
+        max-width: 400px;
+        margin-bottom: 5px;
+    }
+
+    .m-box .mobile::placeholder {
+        font-size: 28px;
+        line-height: 80px;
+    }
+
+    .area {
+        height: 40px;
+        width: 100%;
+        font-size: 20px;
+        line-height: 40px;
+        max-width: 400px;
+    }
+
+    .idcardip {
+        height: 40px;
+        width: 100%;
+        font-size: 20px;
+        line-height: 40px;
+        max-width: 400px;
+    }
+
+    .idcardip::placeholder {
+        font-size: 20px;
+    }
+
+    .iptextarea {
+        height: 80px;
+        width: 100%;
+        font-size: 20px;
+        line-height: 30px;
+        max-width: 400px;
+    }
+    .iptextarea::placeholder {
+        font-size: 20px;
+    }
+
+    .m-box .gs {
+        color: #888;
+        font-size: 16px;
+        margin-left: 20px;
+        /*width: 400px;*/
+    }
+
+    ::-webkit-input-placeholder { /* WebKit browsers */
+        font-size: 40px;
+        line-height: 80px;
+    }
+
+    ::-moz-placeholder { /* Mozilla Firefox 19+ */
+        font-size: 40px;
+        line-height: 80px;
+    }
+
+    :-ms-input-placeholder { /* Internet Explorer 10+ */
+        font-size: 40px;
+        line-height: 80px;
+    }
+
+    .content-box {
+        padding: 0 10px 20px 10px;
+        background-color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .content-box .tit {
+        font-size: 30px;
+        color: #000;
+        text-align: center;
+        font-weight: 700;
+        margin-top: 30px;
+    }
+
+    .content-box .cate {
+        border: 1px solid #ccc;
+        padding: 0 10px 20px 10px;
+        margin-top: 20px;
+        width: 100%;
+    }
+
+    .content-box .cate .c {
+        margin-top: 10px;
+    }
+
+    .content-box .list {
+        background-color: #fff;
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+
+    }
+
+    .active {
+    }
+
+    .active .li {
+        border: 1px solid #3F92ED !important;
+    }
+
+    .active .li > div {
+        color: #3F92ED !important;
+    }
+
+    .content-box .li {
+        width: 140px;
+        height: 90px;
+        margin: 30px 0 0 30px;
+        border: 1px solid #CCCCCC;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        background-color: #F5F5F5;
+    }
+    
+    .content-box .li:hover{
+        background-color: #CDC5C5;
+    }/**鼠标悬浮改变颜色**/
+
+    .content-box .li > div {
+        text-align: center;
+        color: #ccc;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .content-box .li > div:nth-child(1) {
+        font-size: 20px;
+        line-height: 25px;
+    }
+
+    .content-box .li > div:nth-child(2) {
+        font-size: 14px;
+        line-height: 20px;
+        color: #38b !important;
+    }
+
+    .content-box .li > div:nth-child(3) {
+        font-size: 18px;
+        line-height: 20px;
+        color: #f00 !important;
+    }
+
+    .clearfloat:after {
+        display: block;
+        clear: both;
+        content: "";
+        visibility: hidden;
+        height: 0
+    }
+
+    .clearfloat {
+        zoom: 1
+    }
+
+    [v-cloak] {
+        display: none;
+    }
+</style>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeIn" id="page" v-cloak>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>下单</h5>
+                </div>
+
+                <div class="ibox-content">
+                    <div class="m-box">
+                        <input class="mobile form-control" type="text" placeholder="请输入充值账号" v-model="mobile"/>
+
+                        <div class="gs" v-if="guishu">
+                            {{guishu.prov}}{{guishu.city}}{{guishu.ispstr}}
+                        </div>
+                    </div>
+                    <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            <li :class="['typetab',ti==tabindex?'active':'']" data-typeid="1"
+                                v-for="(type,ti) in product"
+                                :key="ti">
+                                <a data-toggle="tab" aria-expanded="false" @click="clickTab(ti)">{{type.name}}</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div :class="['tab-pane',tabindex==ti?'active':'']" v-for="(type,ti) in product" :key="ti">
+                                <div class="panel-body content-box">
+                                    <block v-if="type.typec.id==3">
+                                        <select class="area" v-model="area_index"
+                                                @change="onChangeProv">
+                                            <option value="-1">省份</option>
+                                            <option :value="index" v-for="(item,index) in provs">{{item.city_name}}
+                                            </option>
+                                        </select>
+                                        <select class="area" v-model="ytype"
+                                                v-if="area_index!=-1 && provs[area_index].need_ytype==1">
+                                            {volist name="ytypes" id="vo"}
+                                            <option value="{$key}">{$vo}</option>
+                                            {/volist}
+                                        </select>
+                                        <input class="idcardip" type="text" maxlength="6"
+                                               placeholder="南网验证3要素，身份证/银行卡/营业执照后6位，南网户填"
+                                               v-model="id_card_no"
+                                               v-if="area_index!=-1 && provs[area_index].need_ytype==1"/>
+                                        <select class="area" v-model="city_index"
+                                                v-if="area_index!=-1 && provs[area_index].need_city==1">
+                                            <option value="-1">城市</option>
+                                            <option :value="index" v-for="(item,index) in citys">
+                                                {{item.city_name}}
+                                            </option>
+                                        </select>
+                                    </block>
+                                    <block v-if="type.typec.id>3 && type.typec.ziduan.length>0">
+                                        <block v-for="(zd,zdin) in type.typec.ziduan">
+                                            <input class="idcardip" type="text" :placeholder="zd.pla_ziduan" v-model="$data[zd.zi_duan]" v-if="zd.input_type==1"/>
+                                            <input class="idcardip" type="number" :placeholder="zd.pla_ziduan" v-model="$data[zd.zi_duan]" v-if="zd.input_type==2"/>
+                                            <textarea class="iptextarea" :placeholder="zd.pla_ziduan" v-model="$data[zd.zi_duan]" v-if="zd.input_type==3"></textarea>
+                                            <select class="area" v-model="$data[zd.zi_duan]" v-if="zd.input_type==4">
+                                                <option value="">❤️点击下拉框，选择充值地区❤️</option>
+                                                <option :value="sein" v-for="(seit,sein) in zd.select_items">
+                                                    {{seit}}
+                                                </option>
+                                            </select>
+                                        </block>
+                                    </block>
+
+                                    <div class="cate" v-for="(cate,ci) in type.lists">
+                                        <div class="c">{{cate.cate}}</div>
+                                        <div class="list" v-if="type.lists.length>0">
+                                            <div class="li" @click="queOrder(item.id,item.name)"
+                                                 v-for="(item,index) in cate.products">
+                                                <div>{{item.name}}</div>
+                                                <div>{{item.desc}}</div>
+                                                <div>￥{{item.price}}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div v-if="type.lists.length==0">暂无产品</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    var vue = new Vue({
+        el: '#page',
+        data: {
+            mobile: '',
+            area_index: -1,
+            ytype: 0,
+            id_card_no: '',
+            product: [],
+            guishu: {},
+            tabindex: 0,
+            city_index: -1,
+            citys: [],
+            provs: [],
+            param1: '',
+            param2: '',
+            param3: ''
+        },
+        created: function () {
+            this.initTaocan();
+            this.getProvs();
+        },
+        watch: {
+            mobile: function (newValue, oldValue) {
+                var value = newValue.replace(/\D/g, '').substring(0, 11);
+                if (value.length == 11) {
+                    this.initTaocan();
+                    this.getGuishu();
+                } else if (value == '') {
+                    this.initTaocan();
+                } else {
+                    this.guishu = {};
+                }
+            }
+        },
+        methods: {
+            clickTab: function (index) {
+                if (this.product[index].type == 3) {
+                    this.area_index = -1;
+                    this.city_index = -1;
+                    this.id_card_no = '';
+                    this.ytype = 0;
+                }
+                this.tabindex = index;
+            },
+            initTaocan: function () {
+                $.post("{:U('get_product')}", {mobile: this.mobile}, function (result) {
+                    if (result.errno == 0) {
+                        vue.product = result.data.product;
+                    } else {
+                        vue.product = [];
+                        layer.alert(result.errmsg, {
+                            icon: 5,
+                            skin: 'layer-ext-moon'
+                        })
+                    }
+                });
+            },
+            getGuishu: function () {
+                $.post("{:U('get_guishu')}", {mobile: this.mobile}, function (result) {
+                    if (result.errno == 0) {
+                        vue.guishu = result.data;
+                    }
+                });
+            },
+            onChangeProv: function () {
+                if (this.area_index == -1) return;
+                vue.citys = [];
+                vue.city_index = -1;
+                this.getCitys();
+            },
+            getProvs: function () {
+                $.post("{:U('get_city')}", {pid: 0}, function (result) {
+                    if (result.errno == 0) {
+                        vue.provs = result.data;
+                    }
+                });
+            },
+            getCitys: function () {
+                $.post("{:U('get_city')}", {pid: this.provs[this.area_index].id}, function (result) {
+                    if (result.errno == 0) {
+                        vue.citys = result.data;
+                    }
+                });
+            },
+            queOrder: function (id, name) {
+                var mobile = this.mobile;
+                var area = "";
+                var city = "";
+                if (mobile == "") {
+                    layer.alert("请输入充值账号", {
+                        icon: 5,
+                        skin: 'layer-ext-moon'
+                    })
+                    return;
+                }
+                if (this.product[this.tabindex].type == 3) {
+                    if (this.area_index == -1) {
+                        layer.alert("请选择电费充值省份", {
+                            icon: 5,
+                            skin: 'layer-ext-moon'
+                        })
+                        return;
+                    }
+                    area = this.provs[this.area_index].city_name;
+                    if (this.provs[this.area_index].need_ytype == 1 && (this.ytype == 0 || this.id_card_no == '')) {
+                        // layer.alert("请选择和输入电费验证三要素", {
+                        //     icon: 5,
+                        //     skin: 'layer-ext-moon'
+                        // })
+                        // return;
+                    }
+                    if (this.id_card_no != '' && this.ytype == 0) {
+                        layer.alert("请选择和输入电费验证三要素类型", {
+                            icon: 5,
+                            skin: 'layer-ext-moon'
+                        })
+                        return;
+                    }
+                    if (this.provs[this.area_index].need_city == 1) {
+                        if (this.city_index == -1) {
+                            // layer.alert("请选择电费充值城市", {
+                            //     icon: 5,
+                            //     skin: 'layer-ext-moon'
+                            // })
+                            // return;
+                        } else {
+                            city = this.citys[this.city_index].city_name;
+                        }
+                    }
+                }
+                layer.confirm('为账号[' + mobile + "]下单充值产品【" + name + "】?", {
+                    btn: ['确定', '取消'] //按钮
+                }, function () {
+                    vue.subOrder(id, mobile, area, vue.ytype, vue.id_card_no, city);
+                }, function () {
+
+                });
+            },
+            subOrder: function (id, mobile, area, ytype, id_card, city) {
+                var index = layer.load(1, {
+                    shade: [0.1, '#fff'] //0.1透明度的白色背景
+                });
+                $.post("{:U('create_order')}", {
+                    product_id: id,
+                    mobile: mobile,
+                    area: area,
+                    ytype: ytype,
+                    id_card_no: id_card,
+                    city: city,
+                    param1: this.param1,
+                    param2: this.param2,
+                    param3: this.param3,
+                }, function (result) {
+                    layer.closeAll();
+                    if (result.errno == 0) {
+                        layer.alert(result.errmsg, {
+                            icon: 1,
+                            skin: 'layer-ext-moon'
+                        });
+                        vue.mobile = '';
+                    } else {
+                        layer.alert(result.errmsg, {
+                            icon: 5,
+                            skin: 'layer-ext-moon'
+                        })
+                    }
+                });
+            }
+        }
+    })
+</script>
+</html>

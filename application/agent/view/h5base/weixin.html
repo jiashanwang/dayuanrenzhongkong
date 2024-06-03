@@ -1,0 +1,247 @@
+{include file="public/header" /}
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>公众号资料配置</h5>
+                </div>
+                <div class="ibox-content">
+                    <form method="post" class="form-horizontal" action="{:U('weixin')}">
+                        <input type="hidden" name="id" value="{$info?$info['id']:''}"/>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <?php $types=C('WEIXIN_TYPE');?>
+                                <label>类型<span style="margin-left: 8px;color: #aaa;"></span></label>
+                                <select class="form-control m-b" name="type">
+                                    {volist name="types" id="to"}
+                                    <option value="{$key}"
+                                    <?php if($info &&  $info['type']==$key){ echo "selected='selected'"; } ?>
+                                    >{$to}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>公众号/h5页面标题</label>
+                                <input type="text" class="form-control" name="name" value="{$info?$info.name:''}"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>开发者ID（appid）<a target="_blank"
+                                                      href="https://developers.weixin.qq.com/community/develop/article/doc/0000c2fff446d85af36ce634459c13">如何获取？</a></label>
+                                <input type="text" class="form-control" name="appid" value="{$info?$info.appid:''}"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>开发者密码（appsecret）<a target="_blank"
+                                                          href="https://developers.weixin.qq.com/community/develop/article/doc/0000c2fff446d85af36ce634459c13">如何获取？</a></label>
+                                <input type="text" class="form-control" name="appsecret"
+                                       value="{$info?$info.appsecret:''}"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>令牌（token）<a target="_blank"
+                                                   href="https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Access_Overview.html">如何设置？</a></label>
+                                <input type="text" class="form-control" name="token" value="{$info?$info.token:''}"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>消息加解密密钥（EncodingAESKey) <a target="_blank"
+                                                                  href="https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Access_Overview.html">如何设置？</a></label>
+                                <input type="text" class="form-control" name="encodingaeskey"
+                                       value="{$info?$info.encodingaeskey:''}" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>商户号(mch_id)&nbsp;<a target="_blank"
+                                                           href="https://kf.qq.com/faq/200729EZ7fEj200729aumYR7.html">什么是商户号？</a></label>
+                                <input type="text" class="form-control" name="mch_id"
+                                       value="{$info?$info.mch_id:''}" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>支付秘钥(key)&nbsp;<a target="_blank"
+                                                         href="https://kf.qq.com/faq/180830UVRZR7180830Ij6ZZz.html">如何获取？</a></label>
+                                <input type="text" class="form-control" name="key"
+                                       value="{$info?$info.key:''}" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>证书（apiclient_cert.pem）<a target="_blank"
+                                                                href="https://kf.qq.com/faq/161222NneAJf161222U7fARv.html">如何生成？</a></label>
+                                <div class="input-group zifu">
+                                    <input type="text" class="form-control zifu" name="cert_pem" data-type="file"
+                                           id="cert_pem" value="{$info.cert_pem}" readonly="readonly">
+                                    <span class="input-group-btn">
+                                            <button data-gid="cert_pem" onclick="choose_file($(this))" type="button"
+                                                    class="btn btn-primary">
+                                                <i class="fa fa-upload"></i>&nbsp;<span
+                                                    class="bold">上传文件</span></button>
+                                        </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>证书秘钥（apiclient_key.pem）<a target="_blank"
+                                                                 href="https://kf.qq.com/faq/161222NneAJf161222U7fARv.html">如何生成？</a></label>
+                                <div class="input-group zifu">
+                                    <input type="text" class="form-control zifu" name="key_pem" data-type="file"
+                                           id="key_pem" value="{$info.key_pem}" readonly="readonly">
+                                    <span class="input-group-btn">
+                                            <button data-gid="key_pem" onclick="choose_file($(this))" type="button"
+                                                    class="btn btn-primary">
+                                                <i class="fa fa-upload"></i>&nbsp;<span
+                                                    class="bold">上传文件</span></button>
+                                        </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label title="用于公众号授权域名/JS接口安全域名/网页授权域名验证">业务域名验证文件(xxxx.txt)</label>
+                                <div class="input-group zifu">
+                                    <input type="text" class="form-control zifu" name="dom_txt" data-type="file"
+                                           id="dom_txt" value="{$info.dom_txt}" readonly="readonly">
+                                    <span class="input-group-btn">
+                                            <button data-gid="dom_txt" onclick="choose_file($(this))" type="button"
+                                                    class="btn btn-primary" url="{:U('File/upload_txt')}">
+                                                <i class="fa fa-upload"></i>&nbsp;<span
+                                                    class="bold">上传文件</span></button>
+                                        </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>支付宝appid&nbsp;</label>
+                                <input type="text" class="form-control" name="alipay_appid"
+                                       value="{$info?$info.alipay_appid:''}" autocomplete="off">
+                            </div>
+                        </div>
+<!--                        <div class="form-group">-->
+<!--                            <div class="col-sm-12">-->
+<!--                                <label>支付宝pid&nbsp;</label>-->
+<!--                                <input type="text" class="form-control" name="alipay_pid"-->
+<!--                                       value="{$info?$info.alipay_pid:''}" autocomplete="off">-->
+<!--                            </div>-->
+<!--                        </div>-->
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>支付宝应用私钥&nbsp;</label>
+                                <textarea name="alipay_privatekey" class="form-control">{$info?$info.alipay_privatekey:''}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>支付宝公钥&nbsp;</label>
+                                <textarea name="alipay_publickey" class="form-control">{$info?$info.alipay_publickey:''}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>分享标题</label>
+                                <input type="text" class="form-control" name="share_title"
+                                       value="{$info?$info.share_title:''}" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>分享描述</label>
+                                <input type="text" class="form-control" name="share_desc"
+                                       value="{$info?$info.share_desc:''}" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>分享图标<span style="margin-left: 8px;color: #aaa;"></span></label>
+                                <img id="share_iconimg" src="{$info.share_icon|default=''}"
+                                     style="display: block;margin-bottom: 10px;width: 100px;height: auto;" alt=""/>
+                                <button class="btn btn-success" style="width:100px;" type="button" data-gid="share_icon"
+                                        onclick="choose_file($(this))"><i
+                                        class="fa fa-upload"></i>&nbsp;&nbsp;<span class="bold">上传</span></button>
+                                <input type="hidden" id="share_icon" data-type="img" name="share_icon"
+                                       value="{$info.share_icon|default=''}"/>
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <button type="submit" class="btn btn-primary ajax-post" target-form="form-horizontal">确定
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="file" name="file" id="fileid" onchange="fileUpload()" style="display: none"/>
+</body>
+<script src="__JS__/ajaxfileupload.js" type="text/javascript"></script>
+<script>
+    window.changeIMG = function (name, res) {
+        $("#" + name).attr("src", res);
+        $("[name=" + name + "]").val(res);
+    }
+
+    var gid;
+    var upurl = "";
+
+    function choose_file(obj) {
+        gid = obj.data("gid");
+        var url = obj.attr("url");
+        upurl = url ? url : "{:U('File/upload')}";
+        $("#fileid").trigger("click");
+    }
+
+    function fileUpload() {
+        var index = layer.load(1, {
+            shade: [0.1, '#fff'] //0.1透明度的白色背景
+        });
+        //上传图片
+        $.ajaxFileUpload({
+            url: upurl, //文件上传到哪个地址，告诉ajaxFileUpload
+            secureuri: false, //一般设置为false
+            fileElementId: 'fileid', //文件上传控件的Id  <input type="file" id="fileUpload" name="file" />
+            dataType: 'json', //返回值类型 一般设置为json
+            success: function (ret, status)  //服务器成功响应处理函数
+            {
+                layer.closeAll();
+                if (ret.errno == 0) {
+                    if ($("#" + gid).data('type') == 'img') {
+                        $("#" + gid + "img").attr('src', "{:C('WEB_URL')}" + ret.data);
+                        $("#" + gid + "img").data('url', "{:C('WEB_URL')}" + ret.data);
+                        $("#" + gid).val("{:C('WEB_URL')}" + ret.data);
+                    } else {
+                        $("#" + gid).val(ret.data);
+                    }
+                    toastr.success(ret.errmsg);
+                } else {
+                    toastr.error(ret.errmsg);
+                }
+            }
+        })
+    }
+</script>
+</html>

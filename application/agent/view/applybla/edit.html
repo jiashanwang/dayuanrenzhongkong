@@ -1,0 +1,125 @@
+{include file="public/header" /}
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content" id="page">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>申请</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>转入账户<span style="margin-left: 8px;color: #aaa;"></span></label>
+                                <select class="form-control m-b" v-model="selbank_index">
+                                    <option :value="index" v-for="(item,index) in banks">{{item.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>打款户名<span style="margin-left: 8px;color: #aaa;"></span></label>
+                                <input type="text" class="form-control" v-model="account" placeholder="请填写打款人户名">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>打款金额<span style="margin-left: 8px;color: #aaa;"></span></label>
+                                <input type="text" class="form-control" v-model="money" placeholder="请填写打款金额">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>{{banks[selbank_index].remark}}<span
+                                        style="margin-left: 8px;color: #aaa;"></span></label>
+                                <input type="text" class="form-control" v-model="remark" :placeholder="'请填写'+banks[selbank_index].remark">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <button type="submit" class="btn btn-primary" @click="submit">
+                                    提交申请
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div v-html="banks[selbank_index].tishi">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    var vue = new Vue({
+        el: '#page',
+        data: {
+            banks: [],
+            selbank_index: 0,
+            account: '',
+            money: '',
+            remark: ''
+        },
+        created: function () {
+            this.getBanks();
+        },
+        methods: {
+            getBanks: function () {
+                $.post("{:U('get_banks_ajax')}", {}, function (result) {
+                    if (result.errno == 0) {
+                        vue.banks = result.data;
+                    }else{
+                        alert(result.errmsg);
+                    }
+                });
+            },
+            submit: function () {
+                if (this.account == '' || this.money == '' || this.money == 0) {
+                    layer.alert("请填写打款户名和打款金额", {
+                        icon: 5,
+                        skin: 'layer-ext-moon'
+                    });
+                    return;
+                }
+                if (this.banks[this.selbank_index].is_remark == 1 && this.remark == '') {
+                    layer.alert("请填写" + this.banks[this.selbank_index].remark, {
+                        icon: 5,
+                        skin: 'layer-ext-moon'
+                    });
+                    return;
+                }
+
+                $.post("{:U('edit')}", {
+                    platform_account: this.banks[this.selbank_index].name,
+                    account: this.account,
+                    money: this.money,
+                    remark: this.remark
+                }, function (result) {
+                    if (result.errno == 0) {
+                        layer.msg(result.errmsg, {icon: 6, time: 2000}, function () {
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                        });
+                    } else {
+                        layer.alert(result.errmsg, {
+                            icon: 5,
+                            skin: 'layer-ext-moon'
+                        })
+                    }
+                });
+            }
+
+        }
+    })
+</script>
+</html>

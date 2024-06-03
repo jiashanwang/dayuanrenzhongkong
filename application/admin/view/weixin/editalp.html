@@ -1,0 +1,122 @@
+{include file="public/header" /}
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>微信支付资料编辑</h5>
+                </div>
+                <div class="ibox-content">
+                    <form method="post" class="form-horizontal" action="{:U('editw')}">
+                        <input type="hidden" name="id" value="{$info['id']}"/>
+                        <input type="hidden" name="appid" value="{$info['appid']}"/>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>支付宝appid&nbsp;<span class="text-danger oldconfig"
+                                                           data-value="{:C('alipay.appid')}" data-name="alipay_appid">点我获取老配置</span></label>
+                                <input type="text" class="form-control" name="alipay_appid"
+                                       value="{$info?$info.alipay_appid:''}" autocomplete="off">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>支付宝应用私钥&nbsp;<span class="text-danger oldconfig"
+                                                          data-value="{:C('rsaPrivateKey')}"
+                                                          data-name="alipay_privatekey">点我获取老配置</span></label>
+                                <textarea name="alipay_privatekey" class="form-control">{$info?$info.alipay_privatekey:''}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>支付宝公钥&nbsp;<span class="text-danger oldconfig"
+                                                        data-value="{:C('alipay_rsaPublicKey')}"
+                                                        data-name="alipay_publickey">点我获取老配置</span></label>
+                                <textarea name="alipay_publickey"
+                                          class="form-control">{$info?$info.alipay_publickey:''}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>支付宝支付扩展参数<span style="margin-left: 8px;color: #aaa;"></span></label>
+                                <textarea type="text" class="form-control" name="ali_exoption">{$info.ali_exoption}</textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>支付宝支付方式&nbsp;<span class="text-danger">请保持默认信息，勿修改</span></label>
+                                <input type="text" class="form-control" name="ali_payclass"
+                                       value="{$info.ali_payclass|default='Payalipay'}"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <button type="submit" class="btn btn-primary ajax-post" target-form="form-horizontal">确定
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="file" name="file" id="fileid" onchange="fileUpload()" style="display: none"/>
+</body>
+<script type="text/javascript" charset="utf-8" src="__JS__/ueditor/ueditor.config.js?v=1"></script>
+<script type="text/javascript" charset="utf-8" src="__JS__/ueditor/ueditor.all.min.js?v=1222"></script>
+<script type="text/javascript" charset="utf-8" src="__JS__/ueditor/lang/zh-cn/zh-cn.js"></script>
+<script src="__JS__/ajaxfileupload.js" type="text/javascript"></script>
+<script>
+    var gid;
+    var upurl = "";
+
+    function choose_file(obj) {
+        gid = obj.data("gid");
+        var url = obj.attr("url");
+        upurl = url ? url : "{:U('File/upload')}";
+        $("#fileid").trigger("click");
+    }
+
+    function fileUpload() {
+        var index = layer.load(1, {
+            shade: [0.1, '#fff'] //0.1透明度的白色背景
+        });
+        //上传图片
+        $.ajaxFileUpload({
+            url: upurl, //文件上传到哪个地址，告诉ajaxFileUpload
+            secureuri: false, //一般设置为false
+            fileElementId: 'fileid', //文件上传控件的Id  <input type="file" id="fileUpload" name="file" />
+            dataType: 'json', //返回值类型 一般设置为json
+            success: function (ret, status)  //服务器成功响应处理函数
+            {
+                layer.closeAll();
+                console.log(ret);
+                if (ret.errno == 0) {
+                    if ($("#" + gid).data('type') == 'img') {
+                        $("#" + gid + "img").attr('src', "{:C('WEB_URL')}" + ret.data);
+                        $("#" + gid + "img").data('url', "{:C('WEB_URL')}" + ret.data);
+                        $("#" + gid).val("{:C('WEB_URL')}" + ret.data);
+                    } else {
+                        $("#" + gid).val(ret.data);
+                    }
+                    toastr.success(ret.errmsg);
+                } else {
+                    toastr.error(ret.errmsg);
+                }
+            }
+        })
+    }
+
+    $(".oldconfig").click(function () {
+        var value = $(this).data('value');
+        var domname = $(this).data('name');
+        $("[name=" + domname + "]").val(value);
+    });
+
+</script>
+</html>

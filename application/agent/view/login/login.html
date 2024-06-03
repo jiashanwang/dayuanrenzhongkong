@@ -1,0 +1,274 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>{:C('WEB_SITE_TITLE')}充值系统 - 登录中心</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A premium admin dashboard template by mannatthemes" name="description" />
+        <meta content="Mannatthemes" name="author" />
+        <link rel="shortcut icon" href="../../favicon.ico">
+        <link href="../../public/agent/mobang/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="../../public/agent/mobang/css/icons.css" rel="stylesheet" type="text/css" />
+        <link href="../../public/agent/mobang/css/metismenu.min.css" rel="stylesheet" type="text/css" />
+        <link href="../../public/agent/mobang/css/style.css" rel="stylesheet" type="text/css" />
+
+    </head>
+
+    <body class="account-body">
+
+        <!-- Log In page -->
+        <div class="row vh-100">
+            <div class="col-lg-3  pr-0">
+                <div class="card mb-0 shadow-none">
+                    <div class="card-body">
+                        
+                        <div class="px-3">
+                            <div class="media">
+                                <a href="{:url('login/login')}" class="logo logo-admin"><img src="{:C('SYS_LOGO')?C('SYS_LOGO'):'/public/agent/img/logo.png'}" height="55" alt="logo" class="my-3"></a>
+                                <div class="media-body ml-3 align-self-center">                                                                                                                       
+                                    <h4 class="mt-0 mb-1">{:C('WEB_SITE_TITLE')}</h4>
+                                    <p class="text-muted mb-0">欢迎使用 {:C('WEB_SITE_TITLE')} 代理端</p>
+                                </div>
+                            </div>                            
+                            
+                            <form class="m-t my-3" role="form" action="login.html" method="post" id="commentForm">
+                                <div class="form-group">
+                                    <label for="username">用户账号</label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1"><i class="mdi mdi-account-outline font-16"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="请输入用户账号" required name="username" minlength="2">
+                                    </div>                                    
+                                </div>
+    
+                                <div class="form-group">
+                                    <label for="userpassword">登录密码</label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon2"><i class="mdi mdi-key font-16"></i></span>
+                                        </div>
+                                        <input type="password" class="form-control" placeholder="请输入登录密码" required name="password" minlength="4">
+                                    </div>                                
+                                </div>
+    
+                                <div class="form-group">
+                                    <label for="userpassword">谷歌验证码</label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon2"><i class="mdi mdi-google font-16"></i></span>
+                                        </div>
+                                        <input type="text" class="form-control" placeholder="请输入谷歌身份验证码，未设置不填" name="verifycode" minlength="6" maxlength="6">
+                                    </div>                                
+                                </div>
+    
+                                <div class="form-group mb-0 row">
+                                    <div class="col-12 mt-2">
+                                        <button class="btn btn-primary btn-block waves-effect waves-light" type="submit" id="sublogin" data-loading-text="登录中...">登 录 <i class="fas fa-sign-in-alt ml-1"></i></button>
+                                    </div>
+                                </div>                            
+                            </form>
+                        </div>
+                        <div class="m-3 text-center bg-light p-3 text-primary">
+                            <h5 style="font-weight: 600;">{:C('WEB_SITE_TITLE')}站外公告</h5>
+                            <p class="font-13">
+                                <p>近期发现骗子利用本站网址，欺骗用户！</p>
+                                本站特此声明：请勿轻信刚加您的陌生人，警惕骗子切勿转账，多多相信您身边比较熟悉的朋友！ </p>
+                            <!--<a href="#" class="btn btn-primary btn-round waves-effect waves-light">Free Resister</a>-->
+                        </div>                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-9 p-0 d-flex justify-content-center">
+                <div class="accountbg d-flex align-items-center"> 
+                    <div class="account-title text-white text-center">
+                        <img src="{:C('SYS_LOGO')?C('SYS_LOGO'):'/public/agent/img/logo.png'}" alt="" class="thumb-sm">
+                        <h4 class="mt-3">{:C('WEB_SITE_TITLE')}</h4>
+                        <div class="border w-25 mx-auto border-primary"></div>
+                        <h1 class="">U.M</h1>
+                        <p class="font-16 mt-3">本 站 已 稳 定 运 行 <span id="span"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- jQuery  -->
+        <script src="../../public/agent/mobang/js/jquery.min.js"></script>
+        <script src="../../public/agent/mobang/js/bootstrap.bundle.min.js"></script>
+        <script src="../../public/agent/mobang/js/metisMenu.min.js"></script>
+        <script src="../../public/agent/mobang/js/waves.min.js"></script>
+        <script src="../../public/agent/mobang/js/jquery.slimscroll.min.js"></script>
+        <!-- App js -->
+        <script src="../../public/agent/mobang/js/app.js"></script>
+<script src="../../public/agent/js/jquery.min.js?Fv=2.1.4"></script>
+<script src="../../public/agent/js/bootstrap.min.js?Fv=3.3.6"></script>
+<script src="../../public/agent/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="../../public/agent/js/plugins/validate/messages_zh.min.js"></script>
+<script src="../../public/agent/js/plugins/layer/layer.min.js"></script>
+<script src="../../public/agent/js/particles.min.js"></script>
+</body>
+<script type="text/javascript">
+    function runtime(){
+        // 初始时间，日/月/年 时:分:秒
+        X = new Date("01/01/2023 12:12:12");
+        Y = new Date();
+        T = (Y.getTime()-X.getTime());
+        M = 24*60*60*1000;
+        a = T/M;
+        A = Math.floor(a);
+        b = (a-A)*24;
+        B = Math.floor(b);
+        c = (b-B)*60;
+        C = Math.floor((b-B)*60);
+        D = Math.floor((c-C)*60);
+        //信息写入到DIV中
+        span.innerHTML = " "+A+"天 "+B+"小时 "+C+"分 "+D+"秒"
+    }
+    setInterval(runtime, 1000);
+</script>
+<script>
+    $(function () {
+        $('#commentForm').validate({
+            submitHandler: function (form) {
+                var $form = $(form);
+                var $btn = $("#sublogin").button('loading');
+                $.ajax({
+                    type: 'post',
+                    url: "{:url('Login/logindo')}",
+                    data: $form.serialize(),
+                    success: function (ret) {
+                        $btn.button('reset');
+                        if (ret.errno == 0) {
+                            window.location.href = ret.data.url;
+                        } else {
+                            layer.msg(ret.errmsg, {icon: 2});
+                        }
+                    }
+                });
+            }
+        });
+    })
+</script>
+<script>
+    particlesJS('particles-js',
+        {
+            "particles": {
+                "number": {
+                    "value": 40,
+                    "density": {
+                        "enable": true,
+                        "value_area": 400
+                    }
+                },
+                "color": {
+                    "value": "random"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000"
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    },
+                    "image": {
+                        "src": "img/github.svg",
+                        "width": 100,
+                        "height": 100
+                    }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": false,
+                    "anim": {
+                        "enable": false,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 2,
+                    "random": false,
+                    "anim": {
+                        "enable": true,
+                        "speed": 30,
+                        "size_min": 0.3,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#111",
+                    "opacity": 0.4,
+                    "width": 0.2
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 3,
+                    "direction": "none",
+                    "random": true,
+                    "straight": false,
+                    "out_mode": "out",
+                    'bounce': true,
+                    "attract": {
+                        "enable": false,
+                        "rotateX": 300,
+                        "rotateY": 300
+                    }
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "grab"
+                    },
+                    "onclick": {
+                        "enable": false,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {
+                        "distance": 200,
+                        "line_linked": {
+                            "opacity": 1
+                        }
+                    },
+                    "bubble": {
+                        "distance": 400,
+                        "size": 40,
+                        "duration": 2,
+                        "opacity": 8,
+                        "speed": 3
+                    },
+                    "repulse": {
+                        "distance": 200
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    },
+                    "remove": {
+                        "particles_nb": 2
+                    }
+                }
+            },
+            "retina_detect": true,
+            "config_demo": {
+                "hide_card": false,
+                "background_color": "#b61924",
+                "background_image": "",
+                "background_position": "50% 50%",
+                "background_repeat": "no-repeat",
+                "background_size": "cover"
+            }
+        }
+    );
+</script>
+    </body>
+</html>

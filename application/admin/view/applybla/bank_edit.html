@@ -1,0 +1,84 @@
+{include file="public/header" /}
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>编辑收款账户</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <form method="post" class="form-horizontal" action="{:U('bank_edit')}">
+                        <input type="hidden" name="id" value="{$info.id|default=''}">
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>收款账户<span style="margin-left: 8px;color: #aaa;"></span></label>
+                                <input type="text" class="form-control" name="name" value="{$info.name|default=''}"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>备注字段<span style="margin-left: 8px;color: #aaa;"></span></label>
+                                <input type="text" class="form-control" name="remark" value="{$info.remark|default=''}"
+                                       autocomplete="off" placeholder="如：支付宝流水号、银行打款流水">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>备注字段是否必填<span style="margin-left: 8px;color: #aaa;"></span></label>
+                                <select class="form-control m-b" name="is_remark">
+                                    <option value="1"
+                                    <?php if($info['is_remark']==1){ echo "selected='selected'"; } ?>>是</option>
+                                    <option value="0"
+                                    <?php if($info['is_remark']==0){ echo "selected='selected'"; } ?>>否</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <label>温馨提示<span style="margin-left: 8px;color: #aaa;"></span></label>
+                                <script id="editor_tishi" type="text/plain"
+                                        name="tishi">{$info.tishi}</script>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                        <script>
+                            $(document).ready(function () {
+                                UE.getEditor('editor_tishi');
+                            });
+                        </script>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <button type="submit" class="btn btn-primary ajax-post" target-form="form-horizontal">
+                                    确定
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" charset="utf-8" src="__JS__/ueditor/ueditor.config.js?v=1"></script>
+<script type="text/javascript" charset="utf-8" src="__JS__/ueditor/ueditor.all.min.js?v=1222"></script>
+<script type="text/javascript" charset="utf-8" src="__JS__/ueditor/lang/zh-cn/zh-cn.js"></script>
+<script>
+    window.changeIMG = function (name, res) {
+        $("#" + name).attr("src", res);
+        $("[name=" + name + "]").val(res);
+    }
+
+</script>
+</html>
