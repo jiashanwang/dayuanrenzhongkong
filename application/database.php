@@ -6,11 +6,11 @@ return [
     // 服务器地址
     'hostname' => '127.0.0.1',
     // 数据库名
-    'database' => 'yanshizhan',
+    'database' => 'dayuanren',
     // 用户名
-    'username' => 'yanshizhan',
+    'username' => 'dayuanren',
     // 密码
-    'password' => 'yanshizhan',
+    'password' => 'dayuanren',
     // 端口
     'hostport' => '3306',
     // 连接dsn

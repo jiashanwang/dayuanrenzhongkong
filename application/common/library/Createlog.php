@@ -1,9 +1,24 @@
 <?php
 /*
- ±¾´úÂëÓÉ ³É¶¼´óÔ³ÈËÍøÂç¿Æ¼¼ÓÐÏÞ¹«Ë¾ Ô­´´¿ª·¢
- ¹Ù·½ÍøÖ·£ºwww.dayuanren.cn
- ÑÏ½û·´±àÒë¡¢ÄæÏòµÈÈÎºÎÐÎÊ½µÄÇÖÈ¨ÐÐÎª£¬Î¥Õß½«×·¾¿·¨ÂÉÔðÈÎ
+ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½É¶ï¿½ï¿½ï¿½Ô³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¼ï¿½ï¿½ï¿½ï¿½Þ¹ï¿½Ë¾ Ô­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ ï¿½Ù·ï¿½ï¿½ï¿½Ö·ï¿½ï¿½www.dayuanren.cn
+ ï¿½Ï½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë¡¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½È¨ï¿½ï¿½Îªï¿½ï¿½Î¥ï¿½ß½ï¿½×·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 
-namespace app\common\library;class Createlog{public static function porderLog($porderid,$log){$Kh9vPMC=$porderid%10;$Kh9vPMD='porder_log' . $Kh9vPMC;M($Kh9vPMD)->insertGetId(array('porder_id'=>$porderid,'log'=>$log,'create_time'=>time()));}public static function customerLog($customer_id,$log,$operator){M('customer_log')->insertGetId(array('customer_id'=>$customer_id,'log'=>$log,'operator'=>$operator,'create_time'=>time()));}}
+namespace app\common\library;
+class Createlog
+{
+    public static function porderLog($porderid, $log)
+    {
+        $Kh9vPMC = $porderid % 10;
+        $Kh9vPMD = 'porder_log' . $Kh9vPMC;
+        M($Kh9vPMD)->insertGetId(array('porder_id' => $porderid, 'log' => $log, 'create_time' => time()));
+    }
+
+    public static function customerLog($customer_id, $log, $operator)
+    {
+        M('customer_log')->insertGetId(array('customer_id' => $customer_id, 'log' => $log, 'operator' => $operator, 'create_time' => time()));
+    }
+}
+
 ?>
