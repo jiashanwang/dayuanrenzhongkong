@@ -1,0 +1,9 @@
+---------------------------------------------------------------
+[2024-06-04 17:35:33] 0.0.0.0 POST /api.php/customer/is_bind_mobile
+[ error ] [2]mkdir(): File exists
+---------------------------------------------------------------
+[2024-06-04 17:35:33] 0.0.0.0 POST /api.php/index/get_product_type
+[ error ] [2]mkdir(): File exists
+---------------------------------------------------------------
+[2024-06-04 17:35:33] 0.0.0.0 POST /api.php/open/get_client_city
+[ error ] [2]mkdir(): File exists
